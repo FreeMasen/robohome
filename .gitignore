@@ -1,0 +1,6 @@
+appsettings.json
+.vscode/*
+bin/*
+obj/*
+wwwroot/**/*.js
+wwwroot/**/*.css
