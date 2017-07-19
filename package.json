@@ -1,0 +1,23 @@
+{
+  "name": "robohome",
+  "version": "0.1.0",
+  "description": "RoboHome ------",
+  "main": " ",
+  "scripts": {
+    "test": " "
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/freemasen/robohome.git"
+  },
+  "author": "r.f.masen@gmail.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/freemasen/robohome/issues"
+  },
+  "homepage": "https://github.com/freemasen/robohome#readme",
+  "devDependencies": {
+    "typescript": "^2.4.1",
+    "webpack": "^3.3.0"
+  }
+}

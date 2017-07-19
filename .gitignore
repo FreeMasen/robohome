@@ -4,3 +4,5 @@ bin/*
 obj/*
 wwwroot/**/*.js
 wwwroot/**/*.css
+/**/node_modules/*
+/**/*.log
