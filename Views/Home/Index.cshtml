@@ -1,1 +1,6 @@
-<h1>Hello World</h1>
+@model HomeViewModel
+<h1>RoboHome</h1>
+<form asp-controller="Home" asp-action="SendMessage">
+     <input type="text" asp-for="Message"/> 
+    <button type="submit">Send</button>
+</form>

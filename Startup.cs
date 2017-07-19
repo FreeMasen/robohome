@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using Npgsql.EntityFrameworkCore;
 using Npgsql.EntityFrameworkCore.PostgreSQL;
 using RoboHome.Data;
+using RoboHome.Services;
 
 namespace RoboHome
 {
@@ -29,16 +30,14 @@ namespace RoboHome
             Configuration = builder.Build();
         }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<RoboContext>(options =>  
                             options.UseNpgsql(Configuration.GetConnectionString("DefaultConnectionString")));
             services.AddMvc();
+            services.AddMqClient(Configuration.GetConnectionString("MQConnectionString"));
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
