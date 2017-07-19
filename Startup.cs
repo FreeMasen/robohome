@@ -23,8 +23,7 @@ namespace RoboHome
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
             builder.AddEnvironmentVariables();
             Configuration = builder.Build();
@@ -36,11 +35,17 @@ namespace RoboHome
         {
             services.AddDbContext<RoboContext>(options =>  
                             options.UseNpgsql(Configuration.GetConnectionString("DefaultConnectionString")));
+            services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+                var context =  serviceScope.ServiceProvider.GetService<RoboContext>();       
+                context.EnsureSeedData();
+            }
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
