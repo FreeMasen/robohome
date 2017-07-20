@@ -1,7 +1,7 @@
 
 namespace RoboHome.Models
 {
-    public enum LightState
+    public enum SwitchState
     {
         Off,
         On
