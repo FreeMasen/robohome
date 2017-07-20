@@ -9,8 +9,6 @@ namespace RoboHome.Services
     public class Messenger: IMqClient
     {
         private IConnection Connection;
-        private IModel Channel;
-        
         public Messenger(string connectionString) 
         {
             var factory = new ConnectionFactory();
@@ -18,11 +16,11 @@ namespace RoboHome.Services
             this.Connection = factory.CreateConnection();
         }
 
-        public void SendMessage(int raspberryPi, object message) 
+        public void SendMessage(int remoteId, object message) 
         {
             var json = JsonConvert.SerializeObject(message);
             var msg = Encoding.UTF8.GetBytes(json);
-            var queueName = raspberryPi.ToString();
+            var queueName = remoteId.ToString();
             using (var channel = this.Connection.CreateModel())
             {
                 var props = channel.CreateBasicProperties();

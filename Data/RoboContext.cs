@@ -9,7 +9,8 @@ namespace RoboHome.Data
 {
     public class RoboContext: DbContext
     {
-        public DbSet<Light> Lights { get; set; }
+        public DbSet<Remote> Remotes { get; set; }
+        public DbSet<Switch> Switches { get; set; }
         private DbSet<Flip> Flips { get; set; }
 
         public RoboContext(DbContextOptions<RoboContext> options)
@@ -20,7 +21,8 @@ namespace RoboHome.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            
+            builder.Entity<Remote>()
+                .HasKey("Id");
             base.OnModelCreating(builder);
         }
     }
