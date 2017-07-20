@@ -9,9 +9,10 @@ using RoboHome.Models;
 namespace projects.Migrations
 {
     [DbContext(typeof(RoboContext))]
-    partial class RoboContextModelSnapshot : ModelSnapshot
+    [Migration("20170720040236_location")]
+    partial class location
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)

@@ -21,8 +21,6 @@ namespace RoboHome.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<Remote>()
-                .HasKey("Id");
             base.OnModelCreating(builder);
         }
     }
