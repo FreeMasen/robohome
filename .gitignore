@@ -8,3 +8,5 @@ wwwroot/**/*.css
 /**/*.log
 
 **/.DS_Store
+
+**/*.map

@@ -14,6 +14,7 @@ using Npgsql.EntityFrameworkCore;
 using Npgsql.EntityFrameworkCore.PostgreSQL;
 using RoboHome.Data;
 using RoboHome.Services;
+using Microsoft.AspNetCore.SpaServices;
 
 namespace RoboHome
 {
@@ -49,7 +50,14 @@ namespace RoboHome
             {
                 app.UseDeveloperExceptionPage();
             }
-            app.UseMvcWithDefaultRoute();
+            app.UseMvc(routes => {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=Home}/{action=Index}/{id?}");
+            
+                routes.MapSpaFallbackRoute("spa-fallback", new { controller = "Home", action = "Index" });
+
+            });
             app.UseStaticFiles();
         }
     }

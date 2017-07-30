@@ -1,0 +1,23 @@
+{
+    "compilerOptions": {
+        "alwaysStrict": true,
+        "target": "es5",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "sourceMap": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "lib": ["es6", "dom"],
+        "removeComments": false,
+        "noImplicitAny": false,
+        "types": [
+            "core-js", 
+            "node"    
+        ],
+        "outDir": "wwwroot/js/"
+    },
+    "exclude": [
+        "node_modules/*",
+        "**/*-aot.ts"
+    ]
+}
