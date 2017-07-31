@@ -41,6 +41,10 @@ namespace RoboHome
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.Use( async (context, next) => {
+                Console.WriteLine($"{System.DateTime.Now}::{context.Request.Method}: {context.Request.Path}");
+                await next();
+            });
             using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
                 var context =  serviceScope.ServiceProvider.GetService<RoboContext>();       
