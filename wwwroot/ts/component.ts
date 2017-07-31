@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
-import { Location } from '@angular/common';
-import { Router } from '@angular/router';
+import {Component} from '@angular/core';
+import {Location} from '@angular/common';
+import {Router} from '@angular/router';
 
-import { Button } from './models';
+import {Button} from './models';
 
 @Component({
     selector: 'robo-home',
@@ -11,12 +11,13 @@ import { Button } from './models';
 })
 export class AppComponent { 
     buttons: Button[] = [
-        new Button('switches', 'Switches'),
-        new Button('timers', 'Timers')
+        new Button('dashboard', 'Dashboard'),
+        new Button('remotes', 'Remotes')
     ];
 
     constructor(private location: Location,
-                private router: Router) {}
+                private router: Router) {
+    }
 
     currenPath(href: string): boolean {
         return this.location.path() === '/' + href;

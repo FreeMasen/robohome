@@ -13,10 +13,12 @@ import {Router} from './router';
  * Custom Components
  */
 import {AppComponent} from './component';
-import {Dashboard} from './components';
+import {Dashboard,
+        Remotes} from './components';
 /**
  * Custom Services
  */
+import {Data} from './services';
 
 @NgModule({
     imports: [
@@ -27,10 +29,11 @@ import {Dashboard} from './components';
     ],
     declarations: [
         AppComponent,
-        Dashboard
+        Dashboard,
+        Remotes
     ],
     providers: [
-
+        Data
     ],
     bootstrap: [
         AppComponent

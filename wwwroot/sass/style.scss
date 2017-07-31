@@ -1,11 +1,4 @@
-$primary: #1976d2;
-$primary-light: #63a4ff;
-$primary-dark: #004ba0;
-$secondary: #ffccbc;
-$secondary-light: #ffffee;
-$secondary-dark: #cb9b8c;
-$backgroud: #E1E2E1;
-$background-light: #F5F5F6;
+@import './constants.scss';
 
 @font-face {
     font-family: 'Archer';
@@ -17,7 +10,7 @@ html, body {
     margin: 0;
     padding: 0;
     font-family: 'Archer';
-    background: $backgroud;
+    background: $background;
 }
 
 a {
@@ -49,12 +42,28 @@ button {
     border-radius: 2px;
     text-align: center;
     box-sizing: border-box;
+    border: none;
     cursor: default;
+    
+    &.extra-small {
+        width: 30px;
+        height: 10px;
+        line-height: 5px;
+        padding: 1px 2px;
+        &.square {
+            height: 30px;
+        }
+    }
+
     &.small {
         width: 75px;
         height: 25px;
         line-height: 25px;
         padding: 2px 5px;
+        &.square {
+            height: 75px;
+            border-radius: 5px;
+        }
     }
 
     &.medium {
@@ -97,5 +106,21 @@ nav {
                 color: #000;
             }
         }
+    }
+}
+
+main {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.title {
+    width: 100%;
+    display: flex;
+    flex-flow: row;
+    align-content: center;
+    * {
+        align-self: center;
+        margin-left: 5px;
     }
 }
