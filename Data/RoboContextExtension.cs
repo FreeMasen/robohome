@@ -50,7 +50,7 @@ namespace RoboHome.Data
         {
             context.Remotes.Add(new Remote(){
                 Location = "Living Room",
-                Swiches = context.Switches.ToList()
+                Switches = context.Switches.ToList()
             });
             context.SaveChanges();
         }
