@@ -1,0 +1,16 @@
+<form *ngIf="remote">
+    <div class="remote-title">
+        <label for="location">Location</label>
+        <input id="location" [(ngModel)]="remote.location" name="location" />
+        <span id="last-saved">{{lastSaved}}</span>
+    </div>
+    <div id="switches">
+        <div class="switches-title">
+            <span>Switches</span>
+            <button class="small square">+</button>
+        </div>
+        <div id="switch-list">
+            <switch *ngFor="let sw of remote.switches" [sw]="sw"></switch>
+        </div>
+    </div>
+</form>

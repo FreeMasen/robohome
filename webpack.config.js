@@ -10,7 +10,8 @@ module.exports = function(env) {
     config.entry = {
         pollyfills: __dirname + '/wwwroot/ts/pollyfills.ts',
         vendor: __dirname + '/wwwroot/ts/vendor.ts',
-        app: __dirname + '/wwwroot/ts/main.ts'
+        app: __dirname + '/wwwroot/ts/main.ts',
+        worker: __dirname + '/wwwroot/ts/worker.ts'
     };
     config.output = {
         path: __dirname + '/wwwroot/js/',

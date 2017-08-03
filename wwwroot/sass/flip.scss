@@ -1,0 +1,42 @@
+@import './constants.scss';
+
+.flip-container {
+    display: flex;
+    flex-flow: row;
+    padding: 5px;
+    margin: 10px;
+    border-radius: 5px;
+    font-size: 12pt;
+    background: $primary;
+}
+
+.time {
+    display: flex;
+    flex-flow: row;
+    align-content: center;
+    input,
+    select {
+        font-size: 12pt;
+        padding: 0;
+        height: 19px;
+        align-self: center;
+    }
+    select {
+        margin-left: 2px;
+    }
+    span {
+        align-self: center;
+        margin: 0 2px;
+    }
+}
+
+.radio-container {
+    display: flex;
+    flex-flow: column;
+    margin-left: 5px;
+    .radio-option {
+        display: flex;
+        flex-flow: row;
+        margin: 0;
+    }
+}

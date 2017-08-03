@@ -1,0 +1,25 @@
+<div class="switch-container">
+    <div class="switch-title">
+        <div class="state-container">
+            <label for="switch-name">Name</label>
+            <input id="switch-name" [(ngModel)]="sw.name" />
+        </div>
+        <div class="pins">
+            <div class="pin">
+                <label for="on-pin">On Pin</label>
+                <input id="on-pin" [(ngModel)]="sw.onPin" />
+            </div>
+            <div class="pin">
+                <label for="off-pin">Off Pin</label>
+                <input id="off-pin" [(ngModel)]="sw.offPin" />
+            </div>
+        </div>
+    </div>
+    <div class="schedule">
+        <div class="schedule-title">
+            <span>Schedule</span>
+            <button class="extra-small square" (click)="addFlip()">+</button>
+        </div>
+        <flip *ngFor="let flip of sw.flips" [flip]="flip"></flip>
+    </div>
+</div>

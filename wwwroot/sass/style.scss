@@ -13,6 +13,19 @@ html, body {
     background: $background;
 }
 
+input, textarea,
+select,
+option {
+    font-family: 'Archer';
+    border: 0;
+}
+
+select {
+    border-radius: 5px;
+    border: 0;
+
+}
+
 a {
     text-decoration: none;
     color: inherit
@@ -44,33 +57,44 @@ button {
     box-sizing: border-box;
     border: none;
     cursor: default;
+
+    &.micro {
+        width: 15px;
+        height: 5px;
+        &.square {
+            width: 2.5px;
+        }
+    }
     
     &.extra-small {
-        width: 30px;
-        height: 10px;
+        width: 45px;
+        height: 15px;
         line-height: 5px;
         padding: 1px 2px;
         &.square {
-            height: 30px;
+            width: 15px;
         }
     }
 
     &.small {
         width: 75px;
         height: 25px;
-        line-height: 25px;
+        line-height: 12.5px;
         padding: 2px 5px;
+        font-size: 12pt;
         &.square {
-            height: 75px;
-            border-radius: 5px;
+            width: 25px;
         }
     }
 
     &.medium {
         width: 150px;
         height: 50px;
-        line-height: 50px;
+        line-height: 25px;
         padding: 4px 10px;
+        &.square {
+            width: 50px;
+        }
     }
 
     &.large {
@@ -101,6 +125,7 @@ nav {
             margin: 5px 5px 0 5px;
             font-size: 18pt;
             border-radius: 5px 5px 0 0;
+            line-height: 45px;
             &.selected {
                 background: $secondary;
                 color: #000;
@@ -123,4 +148,14 @@ main {
         align-self: center;
         margin-left: 5px;
     }
+}
+
+.switch-indicator {
+    color: #000;
+    font-size: 18pt;
+    margin: auto;
+}
+
+.switch-indicator.on {
+    color: yellow;
 }

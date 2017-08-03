@@ -11,7 +11,7 @@ namespace RoboHome.Data
     {
         public DbSet<Remote> Remotes { get; set; }
         public DbSet<Switch> Switches { get; set; }
-        private DbSet<Flip> Flips { get; set; }
+        public DbSet<Flip> Flips { get; set; }
 
         public RoboContext(DbContextOptions<RoboContext> options)
             : base(options)

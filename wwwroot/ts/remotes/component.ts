@@ -25,11 +25,11 @@ export class Remotes implements OnInit {
     }
 
     edit(id?: string): void {
+        if (!id) id = 'new';
         this.router.navigate(['remote', id]);
     }
 
     private addRemotes(remotes: Remote[]): void {
-        console.log(remotes);
         this.remotes = remotes;
     }
 }

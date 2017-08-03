@@ -1,0 +1,20 @@
+<div class="flip-container">
+    <div class="time">
+        <input [(ngModel)]="flip.hour" name="hour" type="number" max="12" min="1" />
+        <span>:</span>
+        <input [(ngModel)]="flip.minute" name="minute" type="number" max="59" min="0" />
+        <select [(ngModel)]="flip.timeOfDay">
+            <option value="0">
+                AM
+            </option>
+            <option value="1">
+                PM
+            </option>
+        </select>
+    </div>
+    <div class="radio-container">
+        <div class="radio-option">On to Off <input type="radio" value="0" name="direction" [(ngModel)]="direction" /></div>
+        <div class="radio-option">On to Off <input type="radio" value="1" name="direction" [(ngModel)]="direction" /></div>
+    </div>
+</div>
+{{test}}

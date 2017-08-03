@@ -1,0 +1,49 @@
+@import './constants.scss';
+
+form {
+    margin: 10px;
+    border-radius: 5px;
+    background: $primary;
+    color: #fff;
+    padding: 10px;
+}
+
+.remote-title {
+    display: flex;
+    flex-flow: row;
+    * {
+        font-size: 24pt;
+    }
+
+    input, 
+    span {
+        margin-left: 10px
+    }
+}
+
+#switches {
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 5px;
+    background: $primary-dark;
+
+}
+
+.switches-title {
+    font-size: 20pt;
+    display: flex;
+    flex-flow: row;
+    margin-bottom: 10px;
+    button {
+        margin-left: 10px;
+        background: $secondary;
+    }
+}
+
+#switch-list {
+    display: flex;
+    flex-flow: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-content: space-around;
+}

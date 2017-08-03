@@ -14,7 +14,10 @@ import {Router} from './router';
  */
 import {AppComponent} from './component';
 import {Dashboard,
-        Remotes} from './components';
+        Remotes,
+        RemoteEditor,
+        SwitchEditor,
+        FlipEditor} from './components';
 /**
  * Custom Services
  */
@@ -25,12 +28,16 @@ import {Data} from './services';
         BrowserModule,
         Router,
         HttpModule,
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
+        FormsModule
     ],
     declarations: [
         AppComponent,
         Dashboard,
-        Remotes
+        Remotes,
+        RemoteEditor,
+        SwitchEditor,
+        FlipEditor
     ],
     providers: [
         Data
