@@ -7,7 +7,7 @@
         "sourceMap": true,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
-        "lib": ["es6", "dom"],
+        "lib": ["webworker", "es6", "dom"],
         "removeComments": false,
         "noImplicitAny": false,
         "types": [
