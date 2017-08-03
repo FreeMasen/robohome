@@ -36,7 +36,7 @@ namespace RoboHome
             services.AddDbContext<RoboContext>(options =>  
                             options.UseNpgsql(Configuration.GetConnectionString("DefaultConnectionString")));
             services.AddMvc();
-            services.AddMqClient(Configuration.GetConnectionString("MQConnectionString"));
+            // services.AddMqClient(Configuration.GetConnectionString("MQConnectionString"));
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
