@@ -1,8 +1,8 @@
-<form *ngIf="remote">
+<form *ngIf="remote" (change)="remoteChange($event, remote)">
     <div class="remote-title">
         <label for="location">Location</label>
         <input id="location" [(ngModel)]="remote.location" name="location" />
-        <span id="last-saved">{{lastSaved}}</span>
+        <!-- <span id="last-saved">Last saved: {{lastSaved}}</span> -->
     </div>
     <div id="switches">
         <div class="switches-title">
@@ -10,7 +10,7 @@
             <button class="small square">+</button>
         </div>
         <div id="switch-list">
-            <switch *ngFor="let sw of remote.switches" [sw]="sw"></switch>
+            <switch *ngFor="let sw of remote.switches" [sw]="sw" (switchDeleted)="childDeleted($event)"></switch>
         </div>
     </div>
 </form>

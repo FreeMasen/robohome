@@ -15,8 +15,6 @@ export class Data {
 
     getRemotes(): Promise<Remote[]> {
         console.log('Data.getRemotes()');
-        var openReq = indexedDB.open('RoboHome');
-        openReq.addEventListener('success', this.dbOpened.bind(this));
         return this.http.get('/api/remotes')
                         .toPromise()
                         .then(res => {
@@ -26,29 +24,6 @@ export class Data {
                         .catch(e => {
                             throw e;
                         });
-    }
-
-    dbOpened(event: Event):void {
-        var request = <IDBOpenDBRequest>event.target;
-        var db = <IDBDatabase>request.result;
-        var transaction = db.transaction(['remotes', 'switches', 'flips']);
-        var remoteStore = transaction.objectStore('remotes');
-        remoteStore.get('id')
-        
-    }
-
-    buildRemote(transaction, store, event): void {
-        var request = <IDBRequest>event.target;
-        var cursor = <IDBCursorWithValue>request.result;
-        var switchStore: IDBObjectStore = transaction.objectStore('switches');
-        if (cursor) {
-            var getRequest = switchStore.index('remoteId').get(cursor.value.id);
-            getRequest.addEventListener('success', this.buildSwitch.bind(this, transaction, store));
-        }
-    }
-
-    buildSwitch(transaction, store, event): void {
-
     }
 
     getRemote(id?: string): Promise<Remote> {

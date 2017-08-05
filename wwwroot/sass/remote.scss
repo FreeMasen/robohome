@@ -21,6 +21,13 @@ form {
     }
 }
 
+#last-saved {
+    margin-left: 5px;
+    &.dirty {
+        color: $secondary;
+    }
+}
+
 #switches {
     margin: 10px 0;
     padding: 10px;

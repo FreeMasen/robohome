@@ -8,12 +8,19 @@
     border-radius: 5px;
     font-size: 12pt;
     background: $primary;
+    button {
+        margin-left: 5px;
+        align-self: center;
+    }
 }
 
 .time {
     display: flex;
     flex-flow: row;
     align-content: center;
+    input {
+        text-align: right;
+    }
     input,
     select {
         font-size: 12pt;

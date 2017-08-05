@@ -1,4 +1,5 @@
 <div class="switch-container">
+    <button (click)="deleteSelf()" class="extra-small square" color="error">X</button>
     <div class="switch-title">
         <div class="state-container">
             <label for="switch-name">Name</label>
@@ -20,6 +21,6 @@
             <span>Schedule</span>
             <button class="extra-small square" (click)="addFlip()">+</button>
         </div>
-        <flip *ngFor="let flip of sw.flips" [flip]="flip"></flip>
+        <flip *ngFor="let flip of sw.flips" [flip]="flip" (deleteHandler)="deleteFlip(flip)"></flip>
     </div>
 </div>

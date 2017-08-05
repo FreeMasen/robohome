@@ -3,8 +3,15 @@
 .switch-container {
     border-radius: 5px;
     background: $primary;
-    padding: 10px;
+    padding: 5px;
     margin-bottom: 10px;
+    display: flex;
+    flex-flow: column;
+
+    button {
+        align-self: flex-end;
+        margin-bottom: 5px;
+    }
 }
 
 .switch-title {

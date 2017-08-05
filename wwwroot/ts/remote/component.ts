@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit, ViewChild} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {Location} from '@angular/common';
 import {ActivatedRoute} from '@angular/router';
 import {Form} from '@angular/forms';
@@ -17,20 +17,39 @@ export class RemoteEditor implements OnInit {
 
     constructor(private data: Data,
                 private location: Location,
-                private route: ActivatedRoute,
-                ) {
+                private route: ActivatedRoute) {
     }
 
     ngOnInit(): void {
         this.route.params.forEach(params => {
             var id = params['id'];
-            if (!isNaN(id)) {
-                this.data.getRemote(id)
-                .then(remote => this.addRemote(remote));
-            } else {
-                this.addRemote(new Remote());
+            if (isNaN(id)) {
+                return this.addRemote(new Remote());
             }
+            this.data.getRemote(id)
+            .then(remote => this.addRemote(remote));
         });
+    }
+
+    remoteChange(event): void {
+        console.log('remoteChange', event);
+        this.saveChanges();
+    }
+
+    switchChange(event): void {
+        console.log('RemoteEditor.switchChange', event);
+        this.saveChanges();
+    }
+
+    childDeleted(child): void {
+        console.log('RemoteEditor.childDeleted', event);
+        if (child instanceof Switch) {
+            var index = this.remote.switches.indexOf(child);
+            if (index > -1) {
+                this.remote.switches.splice(index, 1);
+            }
+        }
+        this.saveChanges();
     }
 
     addRemote(remote:Remote): void {
@@ -46,25 +65,31 @@ export class RemoteEditor implements OnInit {
     }
 
     private saveChanges(): void {
-        if (this.dirtyForm() && !this.validateRemote())
-            return this.saved(false);
+        if (!this.isValid())
+            return this.saved(false, true);
         this.data.saveRemote(this.remote)
         .then(success => this.saved(success))
         .catch(e => {throw e});
     }
 
-    private saved(success): void {
-        if (success) this._lastSaved = new Date();
-        setTimeout(this.saveChanges.bind(this), 5000)
+    private saved(success, invalid: boolean = false): void {
+        if (success) {
+            this._lastSaved = new Date();
+        } else {
+            if (!invalid) {
+                setTimeout(this.saveChanges.bind(this), 5000);
+            }
+        }
     }
 
     private dirtyForm(): boolean {
         var dirtyElements = document.querySelectorAll('.ng-dirty');
         var touchedElements = document.querySelectorAll('.ng-touched');
-        return dirtyElements != undefined || touchedElements != undefined;
+        console.log('dirtyForm()', dirtyElements, touchedElements);
+        return dirtyElements && dirtyElements.length > 0 || touchedElements && touchedElements.length > 0;
     }
 
-    private validateRemote(): boolean {
+    private isValid(): boolean {
         var ret = this.remote.location != undefined &&
                 this.validateSwitches(...this.remote.switches);
         return ret;
