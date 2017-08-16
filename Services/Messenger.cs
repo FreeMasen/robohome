@@ -12,7 +12,8 @@ namespace RoboHome.Services
         public Messenger(string connectionString) 
         {
             var factory = new ConnectionFactory();
-            factory.Uri = connectionString;
+            var uri = new Uri(connectionString);
+            factory.Uri = uri;
             this.Connection = factory.CreateConnection();
         }
 
