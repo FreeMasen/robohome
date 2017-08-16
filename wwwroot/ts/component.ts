@@ -20,7 +20,10 @@ export class AppComponent {
     }
 
     currenPath(href: string): boolean {
-        return this.location.path() === '/' + href;
+        if (href[href.length - 1] == 's') {
+            href = href.substr(0, href.length - 2);
+        }
+        return this.location.path().indexOf(href) > -1;
     }
 
     goTo(path: string): void {

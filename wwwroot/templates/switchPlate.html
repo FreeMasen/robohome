@@ -1,0 +1,5 @@
+<span class="switch-name">{{sw.name}}</span>
+<div class="toggle" (click)="flip()">
+    <span class="option" [ngClass]="{selected: isOn}">On</span>
+    <span class="option" [ngClass]="{selected: !isOn}">Off</span>
+</div>

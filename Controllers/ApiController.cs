@@ -6,15 +6,18 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RoboHome.Data;
 using RoboHome.Models;
+using RoboHome.Services;
 
 namespace RoboHome.Controllers
 {
     public class ApiController: Controller
     {
         private readonly RoboContext _context;
+        private readonly Messenger _messenger;
 
-        public ApiController(RoboContext context) {
+        public ApiController(RoboContext context, IMqClient mqClient) {
             this._context = context;
+            this._messenger = (Messenger)mqClient;
         }
 
         [HttpGet("/api/remotes")]
@@ -56,13 +59,17 @@ namespace RoboHome.Controllers
                                         .Where(r => r.Id == remote.Id)
                                         .Include(r => r.Switches)
                                         .Include("Switches.Flips")
-                                        .FirstAsync();
+                                        .FirstOrDefaultAsync();
                 if (dbRemote == null) {
-                    await this._context.Remotes.AddAsync(remote);
+                    await this._context.Remotes
+                                        .AddAsync(new Remote(){
+                                            Location = remote.Location,
+                                            Switches = remote.Switches
+                                        });
                 }
                 else 
                 {
-                    await this.UpdateAndAddSwitches(remote.Switches);
+                    await this.UpdateAndAddSwitches(remote.Switches, dbRemote);
                     this.RemoveSwitches(remote, dbRemote);
                     dbRemote.Location = remote.Location;
                 }
@@ -74,7 +81,28 @@ namespace RoboHome.Controllers
                 return new ObjectResult(ex.Message);
             }
         }
+        [HttpPut]
+        public async Task<IActionResult> Flip(int switchId, SwitchState direction)
+        {
+            try 
+            {
+                var remote = await this._context.Remotes
+                                            .Include(r => r.Switches)
+                                            .Where(r => r.Switches
+                                                        .Select(s => s.Id)
+                                                        .Contains(switchId))
+                                            .FirstOrDefaultAsync();
+                this._messenger.SendMessage(remote.Id, new {switchId = switchId, direction = direction});
+                return new ObjectResult(null);
+            } 
+            catch (Exception ex) 
+            {
+                Console.WriteLine(ex.Message);
+                return new ObjectResult(ex.Message);
+            }
+        }
 
+#region Helpers
         private void RemoveSwitches(Remote remote, Remote dbRemote)
         {
             if (dbRemote.Switches.Count() > remote.Switches.Count())
@@ -87,17 +115,23 @@ namespace RoboHome.Controllers
             }
         }
 
-        private async Task UpdateAndAddSwitches(List<Switch> clientSwitches) 
+        private async Task UpdateAndAddSwitches(List<Switch> clientSwitches, Remote dbRemote) 
         {
             foreach (var sw in clientSwitches) 
             {
                 var dbSwitch = await this._context
                                     .Switches
                                     .Where(s => s.Id == sw.Id)
-                                    .FirstAsync();
+                                    .FirstOrDefaultAsync();
                 if (dbSwitch == null)
                 {
-                    await AddSwitch(sw);
+                    dbRemote.Switches.Add(new Switch(){
+                        Name = sw.Name,
+                        OnPin = sw.OnPin,
+                        OffPin = sw.OffPin,
+                        State = sw.State,
+                        Flips = sw.Flips
+                    });
                 }
                 else
                 {
@@ -114,7 +148,7 @@ namespace RoboHome.Controllers
 
         private async Task UpdateSwitch(Switch sw, Switch dbSwitch)
         {
-            await UpdateAndAddFlips(sw.Flips);
+            await UpdateAndAddFlips(sw.Flips, sw);
             dbSwitch.Name = sw.Name;
             dbSwitch.OffPin = sw.OffPin;
             dbSwitch.OnPin = sw.OnPin;
@@ -134,7 +168,7 @@ namespace RoboHome.Controllers
             }
         }
 
-        private async Task UpdateAndAddFlips(List<Flip> flips)
+        private async Task UpdateAndAddFlips(List<Flip> flips, Switch dbSwitch)
         {
             foreach (var flip in flips)
             {
@@ -143,7 +177,7 @@ namespace RoboHome.Controllers
                                                 .FirstOrDefaultAsync();
                 if (dbFlip == null) 
                 {
-                    this._context.Flips.Add(flip);
+                    dbSwitch.Flips.Add(flip);
                 } 
                 else
                 {
@@ -160,4 +194,5 @@ namespace RoboHome.Controllers
             dbFlip.TimeOfDay = flip.TimeOfDay;
         }
     }
+#endregion
 }

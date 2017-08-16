@@ -1,0 +1,28 @@
+@import './constants.scss';
+
+.toggle {
+    width: 100px;
+    display: flex;
+    flex-flow: row;
+    justify-content: space-around;
+    align-content: center;
+    background: $primary-dark;
+    color: #fff;
+    margin: 2px 0;
+    border-radius: 5px; 
+    .option {
+        width: 50%;
+        padding: 5px 0;
+        text-align: center;
+        display: block;
+        border-radius: 5px;
+        &.selected {
+            background: $secondary;
+            color: #000;
+        }
+    }
+
+    .option + .option {
+        margin-left: 5px;
+    }
+}

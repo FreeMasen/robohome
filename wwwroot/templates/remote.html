@@ -7,7 +7,7 @@
     <div id="switches">
         <div class="switches-title">
             <span>Switches</span>
-            <button class="small square">+</button>
+            <button class="small square" (click)="addSwitch()">+</button>
         </div>
         <div id="switch-list">
             <switch *ngFor="let sw of remote.switches" [sw]="sw" (switchDeleted)="childDeleted($event)"></switch>

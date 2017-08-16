@@ -29,6 +29,7 @@
     "webpack": "^3.3.0"
   },
   "dependencies": {
+    "@angular/animation": "^4.0.0-beta.8",
     "@angular/common": "^4.3.1",
     "@angular/compiler": "^4.3.1",
     "@angular/core": "^4.3.1",

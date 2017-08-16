@@ -3,7 +3,7 @@ import {Http} from '@angular/http';
 
 import 'rxjs';
 
-import {Remote, Switch, Flip} from '../models';
+import {Remote, Switch, Flip, SwitchState} from '../models';
 
 @Injectable()
 export class Data {
@@ -11,6 +11,22 @@ export class Data {
     remotes: Remote[];
     constructor(private http: Http) {
         console.log('new Data()');
+    }
+
+    flip(switchId: number, newState: SwitchState): Promise<boolean> {
+        var url = `/api/flip/?switchId=${switchId}&newState=${newState}`;
+        console.log('data.flip', url);
+        return this.http
+                    .put(url, null)
+                    .toPromise()
+                    .then(response => {
+                        console.log('data.flip',response);
+                        return response.status == 200
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        return false;
+                    });
     }
 
     getRemotes(): Promise<Remote[]> {

@@ -1,7 +1,11 @@
 <nav>
     <div id="left-nav">
         <a (click)="goTo('dashboard')"><h1>RoboHome</h1></a>
-        <a color="primary" class="button medium" *ngFor="let button of buttons" (click)="goTo(button.href)" [ngClass]="{selected: currenPath(button.href)}">
+        <a color="primary" 
+            class="button medium" 
+            *ngFor="let button of buttons" 
+            (click)="goTo(button.href)" 
+            [ngClass]="{selected: currenPath(button.href)}">
             {{button.text}}
         </a>
     </div>

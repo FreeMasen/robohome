@@ -5,6 +5,10 @@
     display: flex;
     flex-flow: row;
     flex-wrap: wrap;
+
+    .remote + .remote {
+        margin-left: 10px;
+    }
 }
 
 .remote {

@@ -1,3 +1,11 @@
 <div id="dashboard">
     <h2 class="component-name">Dashboard</h2>
+    <div class="remotes">
+        <div class="remote" *ngFor="let remote of remotes" (change)="flipSwitch($event)">
+            <span class="location">{{remote.location}}</span>
+            <div class="switch-plates">
+                <switch-plate *ngFor="let sw of remote.switches" [sw]="sw" (flipper)="flipSwitch(sw)"></switch-plate>
+            </div>
+        </div>
+    </div>
 </div>

@@ -4,8 +4,8 @@
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {HttpModule} from '@angular/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {HttpModule} from '@angular/http';
 
 import './rxjs';
 import {Router} from './router';
@@ -17,7 +17,8 @@ import {Dashboard,
         Remotes,
         RemoteEditor,
         SwitchEditor,
-        FlipEditor} from './components';
+        FlipEditor,
+        SwitchPlate} from './components';
 /**
  * Custom Services
  */
@@ -30,7 +31,6 @@ import {Data} from './services';
         HttpModule,
         BrowserAnimationsModule,
         FormsModule,
-        ReactiveFormsModule
     ],
     declarations: [
         AppComponent,
@@ -38,7 +38,8 @@ import {Data} from './services';
         Remotes,
         RemoteEditor,
         SwitchEditor,
-        FlipEditor
+        FlipEditor,
+        SwitchPlate
     ],
     providers: [
         Data

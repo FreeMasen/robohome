@@ -6,13 +6,7 @@ namespace RoboHome.Controllers
 {
     public class HomeController: Controller
     {
-        private readonly IMqClient _messenger;
-        public HomeController(
-            // IMqClient messenger
-            )
-        {
-            // this._messenger = messenger;
-        }
+        public HomeController() {}
         public IActionResult Index(HomeViewModel model = null)
         {
             if (model == null) model = new HomeViewModel();

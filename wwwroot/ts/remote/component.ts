@@ -64,6 +64,10 @@ export class RemoteEditor implements OnInit {
         return secondsAgo + ' seconds ago';
     }
 
+    addSwitch(): void {
+        this.remote.switches.push(new Switch());
+    }
+
     private saveChanges(): void {
         if (!this.isValid())
             return this.saved(false, true);
@@ -80,13 +84,6 @@ export class RemoteEditor implements OnInit {
                 setTimeout(this.saveChanges.bind(this), 5000);
             }
         }
-    }
-
-    private dirtyForm(): boolean {
-        var dirtyElements = document.querySelectorAll('.ng-dirty');
-        var touchedElements = document.querySelectorAll('.ng-touched');
-        console.log('dirtyForm()', dirtyElements, touchedElements);
-        return dirtyElements && dirtyElements.length > 0 || touchedElements && touchedElements.length > 0;
     }
 
     private isValid(): boolean {

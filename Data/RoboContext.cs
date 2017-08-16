@@ -21,6 +21,19 @@ namespace RoboHome.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<Remote>(r => {
+                r.Property<int>("Id")
+                    .UseNpgsqlSerialColumn();
+            });
+
+            builder.Entity<Switch>(s => {
+                s.Property<int>("Id")
+                    .UseNpgsqlSerialColumn();
+            });
+            builder.Entity<Flip>(f => {
+                f.Property<int>("Id")
+                    .UseNpgsqlSerialColumn();
+            });
             base.OnModelCreating(builder);
         }
     }

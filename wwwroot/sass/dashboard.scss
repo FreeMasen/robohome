@@ -1,0 +1,45 @@
+@import './constants.scss';
+#dashboard {
+    margin: 10px;
+    border-radius: 5px;
+    background: $primary;
+    color: #fff;
+    padding: 10px;
+    .remotes {
+        display: flex;
+        flex-flow: row;
+        flex-wrap: wrap;
+        border-radius: 5px;
+        .remote + .remote {
+            margin-left: 10px;
+        }
+
+        .remote {
+            background: $primary-dark;
+            padding: 10px;
+            border-radius: 5px;
+            max-width: 410px;
+            .location {
+                font-size: 24pt;
+            }
+            .switch-plates {
+                border-radius: 5px;
+                display: flex;
+                flex-flow: row;
+                flex-wrap: wrap;
+                justify-content: space-around;
+                margin-left: 15px;
+                margin-right: 15px;
+                switch-plate {
+                    border-radius: 5px;
+                    background: $primary-light;
+                    margin-top: 10px;
+                    padding: 10px;
+                    .switch-name {
+                        font-size: 18pt;
+                    }
+                }
+            }
+        }
+    }
+}
