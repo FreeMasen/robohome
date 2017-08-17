@@ -33,10 +33,14 @@ namespace RoboHome
 
         public void ConfigureServices(IServiceCollection services)
         {
+            var dbConnectionString = Configuration.GetConnectionString("DefaultConnectionString");
+            var MQConnectionString = Configuration.GetConnectionString("MQConnectionString");
+            var weatherUri = Configuration.GetConnectionString("WeatherServiceUri");
             services.AddDbContext<RoboContext>(options =>  
-                            options.UseNpgsql(Configuration.GetConnectionString("DefaultConnectionString")));
+                            options.UseNpgsql(dbConnectionString));
             services.AddMvc();
-            services.AddMqClient(Configuration.GetConnectionString("MQConnectionString"));
+            services.AddMqClient(MQConnectionString);
+            services.AddFlipScheduler(weatherUri);
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -45,11 +49,11 @@ namespace RoboHome
                 Console.WriteLine($"{System.DateTime.Now}::{context.Request.Method}: {context.Request.Path}");
                 await next();
             });
-            using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
-            {
-                var context =  serviceScope.ServiceProvider.GetService<RoboContext>();       
-                context.EnsureSeedData();
-            }
+            // using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            // {
+            //     var context =  serviceScope.ServiceProvider.GetService<RoboContext>();       
+            //     context.EnsureSeedData();
+            // }
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -63,6 +67,7 @@ namespace RoboHome
 
             });
             app.UseStaticFiles();
+            app.StartFlipScheduler();
         }
     }
 }

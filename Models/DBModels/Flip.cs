@@ -8,6 +8,7 @@ namespace RoboHome.Models
         public int Hour { get; set; }
         public int Minute { get; set; }
         public TimeOfDay TimeOfDay { get; set; }
+        public KeyTime KeyTime { get; set; }
 
         //For EF
         private Flip() {}
