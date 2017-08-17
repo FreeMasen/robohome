@@ -22,7 +22,6 @@ namespace RoboHome.Controllers
 
         [HttpGet("/api/remotes")]
         public async Task<IActionResult> Remotes() {
-            System.Console.WriteLine("Remotes");
             try {
                 var remotes = await this._context.Remotes
                                                 .Include(r => r.Switches)
