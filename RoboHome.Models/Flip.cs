@@ -8,10 +8,9 @@ namespace RoboHome.Models
         public int Hour { get; set; }
         public int Minute { get; set; }
         public TimeOfDay TimeOfDay { get; set; }
-        public KeyTime KeyTime { get; set; }
+        public Time Time { get; set; }
 
         //For EF
-        private Flip() {}
         public Flip(int id, SwitchState direction, int hour, int minute, TimeOfDay tod) {
             this.Id = id;
             this.Direction = direction;

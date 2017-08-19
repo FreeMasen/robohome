@@ -14,7 +14,7 @@ namespace RoboHome.Data
         public DbSet<Switch> Switches { get; set; }
         public DbSet<Flip> Flips { get; set; }
         public DbSet<Flip> PendingFlips { get; set; }
-        public DbSet<KeyTimes> KeyTimes { get; set; }
+        public DbSet<KeyTime> KeyTimes { get; set; }
 
         public RoboContext(DbContextOptions<RoboContext> options)
             : base(options)
@@ -24,8 +24,12 @@ namespace RoboHome.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<KeyTimes>(t => {
+            builder.Entity<KeyTime>(t => {
                 t.HasKey("Date");
+            });
+
+            builder.Entity<KeyTime>(t => {
+                t.OwnsOne(c => c.Time);
             });
 
             builder.Entity<Remote>(r => {
@@ -37,10 +41,16 @@ namespace RoboHome.Data
                 s.Property<int>("Id")
                     .UseNpgsqlSerialColumn();
             });
+
             builder.Entity<Flip>(f => {
                 f.Property<int>("Id")
                     .UseNpgsqlSerialColumn();
             });
+
+            builder.Entity<Flip>(f => {
+                f.OwnsOne(c => c.Time);
+            });
+
             base.OnModelCreating(builder);
         }
     }

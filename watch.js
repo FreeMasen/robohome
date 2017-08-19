@@ -3,8 +3,8 @@ var fs = require('fs');
 var path = require('path');
 
 function watch(env) {
-    var sassRoot = __dirname + '/wwwroot/sass/';
-    var cssRoot = __dirname + '/wwwroot/css/';
+    var sassRoot = __dirname + '/RoboHome.Site/wwwroot/sass/';
+    var cssRoot = __dirname + '/RoboHome.Site/wwwroot/css/';
     console.log('watching sass files');
     fs.watch(sassRoot, (event, fn) => {
         console.log('Compiling css for ', fn);

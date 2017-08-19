@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Timers;
@@ -31,19 +32,15 @@ namespace RoboHome.Services
             t.Start();
         }
 
-        public void TimerCb(object sender, EventArgs e)
+        public async void TimerCb(object sender, EventArgs e)
         {
-            this.GetDailyInfo()
-                .GetAwaiter()
-                .OnCompleted(() => {
-                    System.Console.WriteLine("TimerCb");
-                    var timer = (Timer)sender;
-                    timer.Interval = DateTime.Now.MsToNextMidnight();
-                    timer.Start();
-                });
+            var times = await this.GetDailyInfo();
+            if (times.HasValue) {
+                await this.SaveDailyInfo(times.Value.Item1, times.Value.Item2);
+            }
         }
 
-        public async Task<object> GetDailyInfo()
+        public async Task<(DateTime, DateTime)?> GetDailyInfo()
         {
             var client = new HttpClient();
             var res = await client.GetAsync(this.WeatherServiceUri);
@@ -53,31 +50,50 @@ namespace RoboHome.Services
             if (sunriseEpoc.HasValue) {
                 var sunrise = sunriseEpoc.ToDateAsUnix();
                 var sunset = sunsetEpoc.ToDateAsUnix();
+                return (sunrise.Value, sunset.Value);
             }
-
-            return weatherInfo;
+            return null;
         }
 
         private async Task SaveDailyInfo(DateTime sunrise, DateTime sunset)
         {
-            this._context.KeyTimes.Add(new KeyTimes() {
-                Dawn = new KeyTime() {
-                    Hours = sunrise.Hour,
-                    Minutes = sunrise.Minute
+            var today = DateTime.Now.AtMidnight();
+            var keyTimes = new List<KeyTime>() {
+                new KeyTime() {
+                    Date = today,
+                    Time = new Time() {
+                                TimeType = TimeType.Dawn,
+                                Hour = sunrise.Hour,
+                                Minute = sunrise.Minute
+                    }
                 },
-                Light = new KeyTime() {
-                    Hours = sunrise.Hour + 1,
-                    Minutes = sunrise.Minute
+                new KeyTime() {
+                    Date = today,                     
+                    Time = new Time() {
+                        TimeType = TimeType.Dawn,
+                        Hour = sunrise.Hour + 1,
+                        Minute = sunrise.Minute,
+                    }
                 },
-                Dusk = new KeyTime() {
-                    Hours = sunset.Hour - 1,
-                    Minutes = sunset.Minute
+                new KeyTime() {
+                    Date = today,
+                    Time = new Time() {
+                                TimeType = TimeType.Dusk,
+                                Hour = sunrise.Hour - 1,
+                                Minute = sunset.Minute,
+                            }
                 },
-                Dark = new KeyTime() {
-                    Hours = sunset.Hour,
-                    Minutes = sunset.Minute
+                new KeyTime() {
+                    Date = today,
+                    Time = new Time() {
+                            TimeType = TimeType.Sunset,
+                            Hour = sunset.Hour,
+                            Minute = sunset.Minute,
+                        }
                 }
-            });
+            };
+            await this._context.KeyTimes.AddRangeAsync(keyTimes);
+            await this._context.SaveChangesAsync();
         }
     }
 
@@ -106,6 +122,11 @@ namespace RoboHome.Services
             System.DateTime dtDateTime = new DateTime(1970,1,1,0,0,0,0,System.DateTimeKind.Utc);
             dtDateTime = dtDateTime.AddSeconds( unixTimeStamp.Value ).ToLocalTime();
             return dtDateTime;
+        }
+
+        public static DateTime AtMidnight(this DateTime dt)
+        {
+            return new DateTime(dt.Year, dt.Month, dt.Day, 0, 0, 0);
         }
 
         public static int MsToNextMidnight(this DateTime dt) 

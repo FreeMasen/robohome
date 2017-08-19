@@ -8,14 +8,14 @@ module.exports = function(env) {
     compileCss(env);
     var config = {};
     config.entry = {
-        pollyfills: __dirname + '/wwwroot/ts/pollyfills.ts',
-        vendor: __dirname + '/wwwroot/ts/vendor.ts',
-        app: __dirname + '/wwwroot/ts/main.ts',
-        worker: __dirname + '/wwwroot/ts/worker.ts'
+        pollyfills: __dirname + '/RoboHome.Site/wwwroot/ts/pollyfills.ts',
+        vendor: __dirname + '/RoboHome.Site/wwwroot/ts/vendor.ts',
+        app: __dirname + '/RoboHome.Site/wwwroot/ts/main.ts',
+        worker: __dirname + '/RoboHome.Site/wwwroot/ts/worker.ts'
     };
     config.output = {
-        path: __dirname + '/wwwroot/js/',
-        publicPath: '/wwwroot/js/',
+        path: __dirname + '/RoboHome.Site/wwwroot/js/',
+        publicPath: '/RoboHome.Site/wwwroot/js/',
         filename: '[name].js',
         sourceMapFilename: '[name].js.map'
     };
@@ -26,17 +26,17 @@ module.exports = function(env) {
         loaders: [
             {
                 test: /\.ts$/,
-                exclude: ['/node_modules/','/releases/'],
+                exclude: ['/RoboHome.Site/node_modules/','/RoboHome.Site/releases/'],
                 use: ['awesome-typescript-loader']
             },
             {
                 test: /\.css$/,
-                exclude: __dirname + '/wwwroot/js/app',
+                exclude: __dirname + '/RoboHome.Site/wwwroot/js/app',
                 use: text.extract({ fallback: 'style-loader', use: 'css-loader?sourceMap' })
             },
             {
                 test: /\.css$/,
-                include: __dirname + '/wwwroot/js/app',
+                include: __dirname + '/RoboHome.Site/wwwroot/js/app',
                 use: 'raw-loader'
             },
             {
@@ -68,8 +68,8 @@ module.exports = function(env) {
 function compileCss(env) {
     console.log('Compiling css for ', env);
     var config = {};
-    config.file = __dirname + '/wwwroot/sass/style.scss';
-    config.outFile = __dirname + '/wwwroot/css/style.css'
+    config.file = __dirname + '/RoboHome.Site/wwwroot/sass/style.scss';
+    config.outFile = __dirname + '/RoboHome.Site/wwwroot/css/style.css'
     if (env === 'prod') {
         config.outputStyle = 'compressed';
     } else {
