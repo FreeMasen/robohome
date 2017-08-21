@@ -3,19 +3,17 @@ const text = require('extract-text-webpack-plugin');
 const html = require('html-webpack-plugin');
 const sass = require('node-sass');
 
-
 module.exports = function(env) {
-    compileCss(env);
     var config = {};
     config.entry = {
-        pollyfills: __dirname + '/RoboHome.Site/wwwroot/ts/pollyfills.ts',
-        vendor: __dirname + '/RoboHome.Site/wwwroot/ts/vendor.ts',
-        app: __dirname + '/RoboHome.Site/wwwroot/ts/main.ts',
-        worker: __dirname + '/RoboHome.Site/wwwroot/ts/worker.ts'
+        pollyfills: __dirname + '/wwwroot/ts/pollyfills.ts',
+        vendor: __dirname + '/wwwroot/ts/vendor.ts',
+        app: __dirname + '/wwwroot/ts/main.ts',
+        worker: __dirname + '/wwwroot/ts/worker.ts'
     };
     config.output = {
-        path: __dirname + '/RoboHome.Site/wwwroot/js/',
-        publicPath: '/RoboHome.Site/wwwroot/js/',
+        path: __dirname + '/wwwroot/js/',
+        publicPath: '/wwwroot/js/',
         filename: '[name].js',
         sourceMapFilename: '[name].js.map'
     };
@@ -26,17 +24,17 @@ module.exports = function(env) {
         loaders: [
             {
                 test: /\.ts$/,
-                exclude: ['/RoboHome.Site/node_modules/','/RoboHome.Site/releases/'],
+                exclude: ['/node_modules/','/RoboHome.Site/releases/'],
                 use: ['awesome-typescript-loader']
             },
             {
                 test: /\.css$/,
-                exclude: __dirname + '/RoboHome.Site/wwwroot/js/app',
+                exclude: __dirname + '/wwwroot/js/app',
                 use: text.extract({ fallback: 'style-loader', use: 'css-loader?sourceMap' })
             },
             {
                 test: /\.css$/,
-                include: __dirname + '/RoboHome.Site/wwwroot/js/app',
+                include: __dirname + '/wwwroot/js/app',
                 use: 'raw-loader'
             },
             {

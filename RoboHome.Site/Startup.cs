@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SpaServices;
+using Microsoft.AspNetCore.SpaServices.Webpack;
+using Microsoft.AspNetCore.SpaServices.Prerendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,8 +16,8 @@ using Microsoft.Extensions.Logging;
 using Npgsql.EntityFrameworkCore;
 using Npgsql.EntityFrameworkCore.PostgreSQL;
 using RoboHome.Data;
+using RoboHome.Extensions;
 using RoboHome.Services;
-using Microsoft.AspNetCore.SpaServices;
 
 namespace RoboHome
 {
@@ -36,28 +39,18 @@ namespace RoboHome
             var dbConnectionString = Configuration.GetConnectionString("DefaultConnectionString");
             var MQConnectionString = Configuration.GetConnectionString("MQConnectionString");
             var weatherUri = Configuration.GetConnectionString("WeatherServiceUri");
-            services.AddDbContext<RoboContext>(options =>  
-                            options.UseNpgsql(dbConnectionString));
-            services.AddMvc();
-            services.AddMqClient(MQConnectionString);
-            services.AddFlipScheduler(weatherUri);
+            services.UseRoboContext(dbConnectionString)
+                    .AddMqClient(MQConnectionString)
+                    .AddFlipScheduler(weatherUri, dbConnectionString)
+                    .AddMvc();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             app.Use( async (context, next) => {
-                Console.WriteLine($"{System.DateTime.Now}::{context.Request.Method}: {context.Request.Path}");
+                Console.WriteLine($"{DateTime.Now}::{context.Request.Method}: {context.Request.Path}");
                 await next();
             });
-            // using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
-            // {
-            //     var context =  serviceScope.ServiceProvider.GetService<RoboContext>();       
-            //     context.EnsureSeedData();
-            // }
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
             app.UseMvc(routes => {
                 routes.MapRoute(
                     name: "default",
@@ -66,8 +59,14 @@ namespace RoboHome
                 routes.MapSpaFallbackRoute("spa-fallback", new { controller = "Home", action = "Index" });
 
             });
+            if (env.IsDevelopment()) {
+                var webpackPath = $"{Environment.CurrentDirectory}/webpack.config.js";
+                app.UseWebpackDevMiddleware(new WebpackDevMiddlewareOptions() {
+                    // HotModuleReplacement = true,
+                    ConfigFile = webpackPath
+                });
+            }
             app.UseStaticFiles();
-            app.StartFlipScheduler();
         }
     }
 }

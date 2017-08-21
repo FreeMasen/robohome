@@ -3,12 +3,17 @@ using System.Text;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using Microsoft.AspNetCore.Builder;
 
 namespace RoboHome.Services
 {
     public class Messenger: IMqClient
     {
         private IConnection Connection;
+        public Messenger()
+        {
+            
+        }
         public Messenger(string connectionString) 
         {
             var factory = new ConnectionFactory();

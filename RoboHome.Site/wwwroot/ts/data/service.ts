@@ -10,17 +10,14 @@ export class Data {
     private worker: Worker;
     remotes: Remote[];
     constructor(private http: Http) {
-        console.log('new Data()');
     }
 
     flip(switchId: number, newState: SwitchState): Promise<boolean> {
         var url = `/api/flip/?switchId=${switchId}&newState=${newState}`;
-        console.log('data.flip', url);
         return this.http
                     .put(url, null)
                     .toPromise()
                     .then(response => {
-                        console.log('data.flip',response);
                         return response.status == 200
                     })
                     .catch(err => {
@@ -30,7 +27,6 @@ export class Data {
     }
 
     getRemotes(): Promise<Remote[]> {
-        console.log('Data.getRemotes()');
         return this.http.get('/api/remotes')
                         .toPromise()
                         .then(res => {

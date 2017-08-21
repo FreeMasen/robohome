@@ -29,7 +29,7 @@ namespace RoboHome.Controllers
                                                 .ToListAsync();
                 return new ObjectResult(remotes);
             } catch(Exception ex) {
-                return new ObjectResult(ex.Message);
+                return new BadRequestObjectResult(ex.Message);
             }
         }
 

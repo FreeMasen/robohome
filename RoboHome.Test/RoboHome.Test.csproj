@@ -6,8 +6,8 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="../RoboHome.Site/RoboHome.csproj" />
-    <ProjectReference Include="../RoboHome.Models/RoboHome.Lib.csproj" />
+    <ProjectReference Include="../RoboHome.Data/RoboHome.Data.csproj" />
+    <ProjectReference Include="../RoboHome.Services/RoboHome.Services.csproj" />
   </ItemGroup>
 
   <ItemGroup>

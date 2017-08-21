@@ -1,9 +1,19 @@
+using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using RoboHome.Models;
+
 namespace RoboHome.Data
 {
     public static class RoboContextExtension
     {
+        public static IServiceCollection UseRoboContext(this IServiceCollection services, string connectionString) 
+        {
+            services.AddDbContext<RoboContext>(options => 
+                                                options.UseNpgsql(connectionString));
+            return services;
+        }
         public static void EnsureSeedData(this RoboContext context) {
             if (!context.Switches.Any()) 
                 SeedSwitches(context);
@@ -48,10 +58,17 @@ namespace RoboHome.Data
 
         private static void SeedRemotes(RoboContext context)
         {
-            context.Remotes.Add(new Remote(){
-                Location = "Living Room",
-                Switches = context.Switches.ToList()
-            });
+            context.Remotes.AddRange(
+                new List<Remote>() {
+                    new Remote() {
+                        Location = "Living Room",
+                        Switches = context.Switches.ToList()
+                    },
+                    new Remote() {
+                        Location = "Annex",
+                        Switches = new List<Switch>()
+                    }
+                });
             context.SaveChanges();
         }
     }

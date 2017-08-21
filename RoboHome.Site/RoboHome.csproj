@@ -4,17 +4,17 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="wwwroot\" />
-    <ProjectReference Include="../RoboHome.Models/RoboHome.Lib.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../RoboHome.Data/RoboHome.Data.csproj" />
+    <ProjectReference Include="../RoboHome.Services/RoboHome.Services.csproj" />
+    <ProjectReference Include="../RoboHome.Extensions/RoboHome.Extensions.csproj" />
+    <ProjectReference Include="../RoboHome.Services/RoboHome.Services.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="2.0.0" />
-    <PackageReference Include="RabbitMQ.Client" Version="5.0.1" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.0" />
   </ItemGroup>
 </Project>
