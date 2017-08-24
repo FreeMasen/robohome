@@ -13,7 +13,7 @@ export class Data {
     }
 
     flip(switchId: number, newState: SwitchState): Promise<boolean> {
-        var url = `/api/flip/?switchId=${switchId}&newState=${newState}`;
+        var url = `/api/flip?switchId=${switchId}&newState=${newState}`;
         return this.http
                     .put(url, null)
                     .toPromise()

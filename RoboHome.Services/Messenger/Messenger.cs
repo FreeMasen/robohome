@@ -3,22 +3,18 @@ using System.Text;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Options;
 
 namespace RoboHome.Services
 {
     public class Messenger: IMqClient
     {
         private IConnection Connection;
-        public Messenger()
+        public Messenger(IOptions<MessengerOptions> options) 
         {
-            
-        }
-        public Messenger(string connectionString) 
-        {
-            var factory = new ConnectionFactory();
-            var uri = new Uri(connectionString);
-            factory.Uri = uri;
+            var factory = new ConnectionFactory() {
+                Uri = options.Value.Address,
+            };
             this.Connection = factory.CreateConnection();
         }
 
@@ -26,12 +22,16 @@ namespace RoboHome.Services
         {
             var json = JsonConvert.SerializeObject(message);
             var msg = Encoding.UTF8.GetBytes(json);
-            var queueName = remoteId.ToString();
+
+            var topic = remoteId.ToString();
+            var exchangeName = "switches";
             using (var channel = this.Connection.CreateModel())
             {
+                channel.ExchangeDeclare(exchangeName, "topic");
+
                 var props = channel.CreateBasicProperties();
-                channel.QueueDeclare(queueName, false, false, false, null);
-                channel.BasicPublish("", queueName, true, props, msg);
+                channel.QueueDeclare("", false, false, false, null);
+                channel.BasicPublish(exchangeName, topic, true, props, msg);
             }
         }
     }

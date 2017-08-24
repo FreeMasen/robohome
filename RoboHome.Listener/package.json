@@ -1,0 +1,29 @@
+{
+  "name": "robohome.listener",
+  "version": "0.1.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "mocha test/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/freemasen/robohome.git"
+  },
+  "keywords": [
+    "home",
+    "automation"
+  ],
+  "author": "freemasen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/freemasen/robohome/issues"
+  },
+  "homepage": "https://github.com/freemasen/robohome#readme",
+  "devDependencies": {
+    "@types/amqplib": "^0.5.4"
+  },
+  "dependencies": {
+    "amqplib": "^0.5.1"
+  }
+}

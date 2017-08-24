@@ -37,10 +37,12 @@ namespace RoboHome
         public void ConfigureServices(IServiceCollection services)
         {
             var dbConnectionString = Configuration.GetConnectionString("DefaultConnectionString");
-            var MQConnectionString = Configuration.GetConnectionString("MQConnectionString");
+            var MqConnection = Configuration.GetSection("MqUrl");
             var weatherUri = Configuration.GetConnectionString("WeatherServiceUri");
             services.UseRoboContext(dbConnectionString)
-                    .AddMqClient(MQConnectionString)
+                    .AddMqClient(options => {
+                        options.UseConfig(MqConnection);
+                    })
                     .AddFlipScheduler(weatherUri, dbConnectionString)
                     .AddMvc();
         }
@@ -59,13 +61,13 @@ namespace RoboHome
                 routes.MapSpaFallbackRoute("spa-fallback", new { controller = "Home", action = "Index" });
 
             });
-            if (env.IsDevelopment()) {
-                var webpackPath = $"{Environment.CurrentDirectory}/webpack.config.js";
-                app.UseWebpackDevMiddleware(new WebpackDevMiddlewareOptions() {
-                    // HotModuleReplacement = true,
-                    ConfigFile = webpackPath
-                });
-            }
+            // if (env.IsDevelopment()) {
+            //     var webpackPath = $"{Environment.CurrentDirectory}/webpack.config.js";
+            //     app.UseWebpackDevMiddleware(new WebpackDevMiddlewareOptions() {
+            //         // HotModuleReplacement = true,
+            //         ConfigFile = webpackPath
+            //     });
+            // }
             app.UseStaticFiles();
         }
     }

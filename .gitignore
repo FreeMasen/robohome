@@ -11,3 +11,6 @@
 
 **/*.map
 build.sh
+
+RoboHome.Listener/**/*.js
+RoboHome.Listener/**/*.js.map
