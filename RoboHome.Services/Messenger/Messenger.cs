@@ -27,12 +27,14 @@ namespace RoboHome.Services
             var exchangeName = "switches";
             using (var channel = this.Connection.CreateModel())
             {
-                channel.ExchangeDeclare(exchangeName, "topic");
-
+                channel.ExchangeDeclare(exchangeName, "topic", false);
+                
                 var props = channel.CreateBasicProperties();
-                channel.QueueDeclare("", false, false, false, null);
+                channel.QueueDeclare(exchangeName, false, false, false, null);
+                channel.QueueBind(exchangeName, exchangeName, topic, null);
                 channel.BasicPublish(exchangeName, topic, true, props, msg);
             }
+            
         }
     }
 }

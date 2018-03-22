@@ -24,13 +24,12 @@ export class Dashboard implements OnInit {
 
     flipSwitch(sw: Switch): void {
         console.log('flipSwitch', sw);
-        var newState;
         if (sw.state === SwitchState.On) {
-            newState = SwitchState.Off;
+            sw.state = SwitchState.Off;
         } else {
-            newState = SwitchState.On;
+            sw.state = SwitchState.On;
         }
-        this.data.flip(sw.id, newState)
+        this.data.flip(sw.id, sw.state)
             .then(result => this.flipResponse(result, sw.id))
     }
 

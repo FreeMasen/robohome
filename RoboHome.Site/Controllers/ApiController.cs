@@ -81,7 +81,7 @@ namespace RoboHome.Controllers
             }
         }
         [HttpPut]
-        public async Task<IActionResult> Flip(int switchId, SwitchState direction)
+        public async Task<IActionResult> Flip(int switchId, SwitchState newState)
         {
             try 
             {
@@ -91,7 +91,7 @@ namespace RoboHome.Controllers
                                                         .Select(s => s.Id)
                                                         .Contains(switchId))
                                             .FirstOrDefaultAsync();
-                this._messenger.SendMessage(remote.Id, new {switchId = switchId, direction = direction});
+                this._messenger.SendMessage(remote.Id, new {switch_id = switchId, direction = newState});
                 return new ObjectResult(null);
             } 
             catch (Exception ex) 

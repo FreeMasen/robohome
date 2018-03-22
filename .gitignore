@@ -14,3 +14,6 @@ build.sh
 
 RoboHome.Listener/**/*.js
 RoboHome.Listener/**/*.js.map
+
+robohome_listener/target/**/*
+robohome_listener/settings.toml

@@ -62,7 +62,6 @@ module.exports = function(env) {
     }
     return config;
 }
-
 function compileCss(env) {
     console.log('Compiling css for ', env);
     var config = {};
