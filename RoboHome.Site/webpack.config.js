@@ -28,16 +28,6 @@ module.exports = function(env) {
                 use: ['awesome-typescript-loader']
             },
             {
-                test: /\.css$/,
-                exclude: __dirname + '/wwwroot/js/app',
-                use: text.extract({ fallback: 'style-loader', use: 'css-loader?sourceMap' })
-            },
-            {
-                test: /\.css$/,
-                include: __dirname + '/wwwroot/js/app',
-                use: 'raw-loader'
-            },
-            {
                 test: /\.html$/,
                 use: 'html-loader'
             },

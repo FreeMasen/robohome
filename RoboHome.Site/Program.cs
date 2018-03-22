@@ -17,7 +17,6 @@ namespace RoboHome
         
         public static IWebHost BuildWebHost(string[] args) => 
             WebHost.CreateDefaultBuilder(args)
-                .UseUrls("http://localhost:8080")
                 .UseStartup<Startup>()
                 .Build();
     }
