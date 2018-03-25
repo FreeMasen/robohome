@@ -5,13 +5,10 @@
     display: flex;
     flex-flow: row;
     flex-wrap: wrap;
-
-    .remote + .remote {
-        margin-left: 10px;
-    }
 }
 
 .remote {
+    margin: 5px;
     display: flex;
     flex-flow: column;
     border-radius: 5px;
@@ -20,10 +17,18 @@
     color: #fff;
     align-content: center;
     text-align: center;
+    position: relative;
     h3 {
         align-self: center;
         margin: 0;
-        font-size: 24pt; 
+        font-size: 24pt;
+        cursor: pointer;
+    }
+    button {
+        position: absolute;
+        right: 5px;
+        top: 5px;
+        background: $error;
     }
 }
 
@@ -33,6 +38,11 @@
     flex-wrap: wrap;
     width: 400px;
     margin-left: 25px;
+    justify-content: flex-start;
+    align-content: flex-start;
+    align-items: flex-start;
+    height: 100%;
+    cursor: pointer;
 }
 
 .switch {

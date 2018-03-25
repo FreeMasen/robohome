@@ -13,6 +13,7 @@ export class SwitchPlate {
 
     @Output()
     flipper = new EventEmitter<number>();
+
     flip() {
         if (this.sw.state == SwitchState.On) {
             this.sw.state = SwitchState.Off;

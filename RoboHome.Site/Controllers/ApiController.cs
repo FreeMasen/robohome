@@ -60,26 +60,52 @@ namespace RoboHome.Controllers
                                         .Include("Switches.Flips")
                                         .FirstOrDefaultAsync();
                 if (dbRemote == null) {
-                    await this._context.Remotes
+
+                    var newEntity = await this._context.Remotes
                                         .AddAsync(new Remote(){
                                             Location = remote.Location,
                                             Switches = remote.Switches
                                         });
+                    await this._context.SaveChangesAsync();
+                    return new ObjectResult(newEntity.Entity);
                 }
                 else 
                 {
                     await this.UpdateAndAddSwitches(remote.Switches, dbRemote);
                     this.RemoveSwitches(remote, dbRemote);
                     dbRemote.Location = remote.Location;
+                    await this._context.SaveChangesAsync();
+                    return new ObjectResult(dbRemote);
                 }
-                await this._context.SaveChangesAsync();
-                return new ObjectResult(null);
             }
             catch (Exception ex) 
             {
                 return new ObjectResult(ex.Message);
             }
         }
+
+        [HttpDelete("/api/delete/remote/{id}")]
+        public async Task<IActionResult> DeleteRemote(int id)
+        {
+            try {
+                var remote = await this._context.Remotes
+                                        .Where(r => r.Id == id)
+                                        .Include(r => r.Switches)
+                                        .Include("Switches.Flips")
+                                        .FirstOrDefaultAsync();
+                Console.WriteLine("Remote to delete {0}", remote);
+                foreach (var sw in remote.Switches) {
+                    this._context.Switches.Remove(sw);
+                }
+                this._context.Remotes.Remove(remote);
+                await this._context.SaveChangesAsync();
+                return new ObjectResult(null);
+            } catch (Exception ex) {
+                Console.WriteLine("Error deleting remote {0}", ex.Message);
+                return new ObjectResult(ex.Message);
+            }
+        }
+
         [HttpPut]
         public async Task<IActionResult> Flip(int switchId, SwitchState newState)
         {
@@ -114,7 +140,7 @@ namespace RoboHome.Controllers
             }
         }
 
-        private async Task UpdateAndAddSwitches(List<Switch> clientSwitches, Remote dbRemote) 
+        private async Task UpdateAndAddSwitches(List<Switch> clientSwitches, Remote dbRemote)
         {
             foreach (var sw in clientSwitches) 
             {

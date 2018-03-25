@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject, OnInit, Output, EventEmitter} from '@angular/core';
 import {Location} from '@angular/common';
 import {ActivatedRoute} from '@angular/router';
 import {Form} from '@angular/forms';
@@ -24,11 +24,20 @@ export class RemoteEditor implements OnInit {
         this.route.params.forEach(params => {
             var id = params['id'];
             if (isNaN(id)) {
-                return this.addRemote(new Remote());
+                return this.newRemote();
             }
             this.data.getRemote(id)
             .then(remote => this.addRemote(remote));
         });
+    }
+
+    newRemote() {
+        let forSending = new Remote();
+        this.data.saveRemote(forSending)
+            .then(remote => {
+                //this will have the new ID assigned
+                this.addRemote(remote);
+            });
     }
 
     remoteChange(event): void {
@@ -54,7 +63,7 @@ export class RemoteEditor implements OnInit {
 
     addRemote(remote:Remote): void {
         this.remote = remote;
-        this.saved(true);
+        // this.saved(true);
     }
 
     get lastSaved(): string {
@@ -70,14 +79,15 @@ export class RemoteEditor implements OnInit {
 
     private saveChanges(): void {
         if (!this.isValid())
-            return this.saved(false, true);
+            return this.saved(null, true);
         this.data.saveRemote(this.remote)
-        .then(success => this.saved(success))
+        .then(remote => this.saved(remote))
         .catch(e => {throw e});
     }
 
-    private saved(success, invalid: boolean = false): void {
-        if (success) {
+    private saved(newRemote?: Remote, invalid: boolean = false): void {
+        if (newRemote) {
+            this.remote = newRemote;
             this._lastSaved = new Date();
         } else {
             if (!invalid) {
@@ -87,9 +97,11 @@ export class RemoteEditor implements OnInit {
     }
 
     private isValid(): boolean {
-        var ret = this.remote.location != undefined &&
-                this.validateSwitches(...this.remote.switches);
-        return ret;
+        if (!this.remote.location || this.remote.location == '') {
+            console.warn('Invalid switch location', this.remote);
+            return false;
+        }
+        return this.validateSwitches(...this.remote.switches);
     }
 
     private validateSwitches(...switches: Switch[]): boolean {

@@ -15,7 +15,6 @@ export class Remotes implements OnInit {
                 private router: Router) {}
 
     ngOnInit(): void {
-        var self = this;
         this.data.getRemotes()
                 .then(remotes => this.addRemotes(remotes));
     }
@@ -31,5 +30,21 @@ export class Remotes implements OnInit {
 
     private addRemotes(remotes: Remote[]): void {
         this.remotes = remotes;
+    }
+
+    deleteRemote(id: string): void {
+        console.log('Remotes.deleteRemote', id);
+        let remote = this.remotes.find(r => r.id == parseInt(id));
+        this.data.deleteRemote(remote)
+            .then(success => {
+                if (success) {
+                    this.data.getRemotes()
+                        .then(remotes => {
+                            this.remotes = remotes;
+                        })
+                        .catch(e => { throw e });
+                }
+            })
+            .catch(e => { throw e });
     }
 }

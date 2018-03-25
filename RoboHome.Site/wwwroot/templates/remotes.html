@@ -3,9 +3,10 @@
     <button color="primary" class="extra-small square" (click)="edit()">+</button>
 </div>
 <ul id="remotes">
-    <li *ngFor="let remote of remotes" class="remote" (click)="edit(remote.id)">
-        <h3>{{remote.location}}</h3>
-        <div class="switches">
+    <li *ngFor="let remote of remotes" class="remote">
+        <h3 (click)="edit(remote.id)">{{remote.location}}</h3>
+        <button (click)="deleteRemote(remote.id)" class="small square" >X</button>
+        <div class="switches" (click)="edit(remote.id)">
             <div *ngFor="let sw of remote.switches" class="switch">
                 <h4>{{sw.name}}</h4>
                 <i class="switch-indicator" [ngClass]="{on: isOn(sw)}">☀</i>
