@@ -11,43 +11,29 @@ import  {Data} from '../services';
 )
 export class Dashboard implements OnInit {
     remotes: Remote[] = [];
-    constructor(private data: Data){
+    constructor(private data: Data) {
+
     }
 
     ngOnInit(): void {
+        this.getOrUpdateRemotes()
+    }
+
+    flipSwitch(sw: Switch): void {
+        console.log('flipSwitch', sw);
+        let state = SwitchState.On;
+        if (sw.state == SwitchState.On) {
+            state = SwitchState.Off;
+        }
+        this.data.flip(sw.id, state)
+            .then(result => this.getOrUpdateRemotes())
+    }
+
+    getOrUpdateRemotes() {
         this.data
             .getRemotes()
             .then(remotes => {
                 this.remotes = remotes;
             });
-    }
-
-    flipSwitch(sw: Switch): void {
-        console.log('flipSwitch', sw);
-        if (sw.state === SwitchState.On) {
-            sw.state = SwitchState.Off;
-        } else {
-            sw.state = SwitchState.On;
-        }
-        this.data.flip(sw.id, sw.state)
-            .then(result => this.flipResponse(result, sw.id))
-    }
-
-    flipResponse(result, switchId): void {
-        if (result) {
-            var switches = this.remotes.reduce((a, b) => {
-                return a.concat(b.switches);
-            }, [])
-            for (var i = 0; i < switches.length; i++) {
-                var sw = switches[i];
-                if (sw.id === switchId) {
-                    if (sw.state == SwitchState.On) {
-                        sw.state = SwitchState.Off;
-                    } else {
-                        sw.state = SwitchState.On;
-                    }
-                }
-            }
-        }
     }
 }

@@ -43,7 +43,8 @@ namespace RoboHome
                     .AddMqClient(options => {
                         options.UseConfig(MqConnection);
                     })
-                    .AddFlipScheduler(weatherUri, dbConnectionString)
+                    .AddFlipScheduler(dbConnectionString, weatherUri)
+                    .AddFlipExecuter(dbConnectionString, MqConnection)
                     .AddMvc();
         }
 

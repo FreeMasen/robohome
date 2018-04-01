@@ -1,8 +1,14 @@
-import {SwitchState, TimeOfDay} from '../models';
+import {SwitchState, Time} from '../models';
 export class Flip {
-    constructor(public id: number = 0,
+    constructor(public id: number = -1,
                 public direction: SwitchState = SwitchState.Off,
-                public hour: number = 0,
-                public minute: number = 0,
-                public timeOfDay: TimeOfDay = TimeOfDay.Am) {}
+                public time: Time = new Time()) {}
+    static fromJson(json: any): Flip {
+        if (!json) return new Flip();
+        return new Flip(
+            json.id,
+            json.direction,
+            Time.fromJson(json.time),
+        )
+    }
 }

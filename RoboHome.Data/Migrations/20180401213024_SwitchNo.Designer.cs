@@ -12,9 +12,10 @@ using System;
 namespace projects.Migrations
 {
     [DbContext(typeof(RoboContext))]
-    partial class RoboContextModelSnapshot : ModelSnapshot
+    [Migration("20180401213024_SwitchNo")]
+    partial class SwitchNo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

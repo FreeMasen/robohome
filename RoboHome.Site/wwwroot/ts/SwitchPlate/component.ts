@@ -15,15 +15,11 @@ export class SwitchPlate {
     flipper = new EventEmitter<number>();
 
     flip() {
-        if (this.sw.state == SwitchState.On) {
-            this.sw.state = SwitchState.Off;
-        } else {
-            this.sw.state = SwitchState.On;
-        }
         this.flipper.emit(this.sw.id);
     }
 
     get isOn(): boolean {
+        console.log('SwitchPlate.get isOn', this.sw.state);
         return this.sw.state === SwitchState.On;
     }
 }

@@ -1,7 +1,7 @@
 import {Component, Input, Output, EventEmitter} from '@angular/core';
 import {Form} from '@angular/forms';
 
-import {Flip, SwitchState} from '../models';
+import {Flip, SwitchState, TimeOfDay} from '../models';
 
 @Component({
     selector: 'flip',
@@ -21,23 +21,45 @@ export class FlipEditor {
     }
 
     get hour(): string {
-        return this.flip.hour.toString();
+        console.log('FlipEditor.get hour', this.flip);
+        return this.flip.time.hour.toString();
     }
 
     set hour(value: string) {
+        console.log('FlipEditor.set hour', value);
         var parsed = parseInt(value);
         if (parsed > 12) {
             parsed = parsed - 12;
         }
-        this.flip.hour = parsed;
+        this.flip.time.hour = parsed;
     }
 
     get minute(): string {
-        return '0' + this.flip.minute.toString().substr(-2);
+        console.log('FlipEditor.get minute', this.flip);
+        return '0' + this.flip.time.minute.toString().substr(-2);
     }
 
     set minute(value: string) {
-        this.flip.minute = parseInt(value);
+        console.log('FlipEditor.set minute', value);
+        this.flip.time.minute = parseInt(value);
+    }
+
+    get tod(): string {
+        console.log('FlipEditor.get tod', this.flip);
+        return this.flip.time.timeOfDay.toString();
+    }
+
+    set tod(value: string) {
+        console.log('FlipEditor.get tod', value);
+        if (value == '0') {
+            this.flip.time.timeOfDay = TimeOfDay.Am;
+            return;
+        }
+        if (value == '1') {
+            this.flip.time.timeOfDay = TimeOfDay.Pm;
+            return;
+        }
+        console.warn('Invalid TOD', value);
     }
 
     get direction(): string {

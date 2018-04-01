@@ -5,18 +5,17 @@ namespace RoboHome.Models
     {
         public int Id { get; set; }
         public SwitchState Direction { get; set; }
-        public int Hour { get; set; }
-        public int Minute { get; set; }
-        public TimeOfDay TimeOfDay { get; set; }
         public Time Time { get; set; }
-
-        private Flip() {}
+        public int SwitchId { get; set; }
+        public Flip() {}
         public Flip(int id, SwitchState direction, int hour, int minute, TimeOfDay tod) {
             this.Id = id;
             this.Direction = direction;
-            this.Hour = hour;
-            this.Minute = minute;
-            this.TimeOfDay = tod;
+            this.Time = new Time() {
+                Hour = hour,
+                Minute = minute,
+                TimeOfDay = tod
+            };
         }
     }
 }

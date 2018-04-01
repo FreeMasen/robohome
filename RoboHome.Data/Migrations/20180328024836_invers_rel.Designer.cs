@@ -12,9 +12,10 @@ using System;
 namespace projects.Migrations
 {
     [DbContext(typeof(RoboContext))]
-    partial class RoboContextModelSnapshot : ModelSnapshot
+    [Migration("20180328024836_invers_rel")]
+    partial class invers_rel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,7 +36,7 @@ namespace projects.Migrations
 
                     b.HasIndex("SwitchId");
 
-                    b.ToTable("Flips");
+                    b.ToTable("Flip");
                 });
 
             modelBuilder.Entity("RoboHome.Models.KeyTime", b =>
@@ -67,8 +68,6 @@ namespace projects.Migrations
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn);
 
                     b.Property<string>("Name");
-
-                    b.Property<int>("Number");
 
                     b.Property<int>("OffPin");
 
@@ -104,7 +103,7 @@ namespace projects.Migrations
 
                             b1.Property<int>("TimeType");
 
-                            b1.ToTable("Flips");
+                            b1.ToTable("Flip");
 
                             b1.HasOne("RoboHome.Models.Flip")
                                 .WithOne("Time")

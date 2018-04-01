@@ -12,9 +12,10 @@ using System;
 namespace projects.Migrations
 {
     [DbContext(typeof(RoboContext))]
-    partial class RoboContextModelSnapshot : ModelSnapshot
+    [Migration("20180328021836_time")]
+    partial class time
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -29,13 +30,13 @@ namespace projects.Migrations
 
                     b.Property<int>("Direction");
 
-                    b.Property<int>("SwitchId");
+                    b.Property<int?>("SwitchId");
 
                     b.HasKey("Id");
 
                     b.HasIndex("SwitchId");
 
-                    b.ToTable("Flips");
+                    b.ToTable("Flip");
                 });
 
             modelBuilder.Entity("RoboHome.Models.KeyTime", b =>
@@ -68,13 +69,11 @@ namespace projects.Migrations
 
                     b.Property<string>("Name");
 
-                    b.Property<int>("Number");
-
                     b.Property<int>("OffPin");
 
                     b.Property<int>("OnPin");
 
-                    b.Property<int>("RemoteId");
+                    b.Property<int?>("RemoteId");
 
                     b.Property<int>("State");
 
@@ -89,8 +88,7 @@ namespace projects.Migrations
                 {
                     b.HasOne("RoboHome.Models.Switch")
                         .WithMany("Flips")
-                        .HasForeignKey("SwitchId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("SwitchId");
 
                     b.OwnsOne("RoboHome.Models.Time", "Time", b1 =>
                         {
@@ -104,7 +102,7 @@ namespace projects.Migrations
 
                             b1.Property<int>("TimeType");
 
-                            b1.ToTable("Flips");
+                            b1.ToTable("Flip");
 
                             b1.HasOne("RoboHome.Models.Flip")
                                 .WithOne("Time")
@@ -140,8 +138,7 @@ namespace projects.Migrations
                 {
                     b.HasOne("RoboHome.Models.Remote")
                         .WithMany("Switches")
-                        .HasForeignKey("RemoteId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("RemoteId");
                 });
 #pragma warning restore 612, 618
         }

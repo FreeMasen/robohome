@@ -27,7 +27,7 @@ export class RemoteEditor implements OnInit {
                 return this.newRemote();
             }
             this.data.getRemote(id)
-            .then(remote => this.addRemote(remote));
+                .then(remote => this.addRemote(remote));
         });
     }
 
@@ -129,11 +129,11 @@ export class RemoteEditor implements OnInit {
     private validateFlips(flips: Flip[]): boolean {
         for (var i = 0; i < flips.length;i++) {
             var flip = flips[i];
-            if (flip.hour < 1 || flip.hour > 12) {
+            if (flip.time.hour < 1 || flip.time.hour > 12) {
                 console.warn('invalid hour for flip', flip)
                 return false;
             }
-            if (flip.minute < 0 || flip.minute > 59) {
+            if (flip.time.minute < 0 || flip.time.minute > 59) {
                 console.warn('invalid minute for flip', flip)
                 return false;
             }

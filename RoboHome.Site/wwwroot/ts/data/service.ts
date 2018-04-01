@@ -3,7 +3,7 @@ import {Http} from '@angular/http';
 
 import 'rxjs';
 
-import {Remote, Switch, Flip, SwitchState} from '../models';
+import {Remote, Switch, Flip, SwitchState, Time} from '../models';
 
 @Injectable()
 export class Data {
@@ -46,7 +46,7 @@ export class Data {
                         .toPromise()
                         .then(res => {
                             var responseBody = res.json();
-                            return responseBody.map(Data.mapRemote);
+                            return responseBody.map(Remote.fromJson);
                         })
                         .catch(e => {
                             throw e;
@@ -60,7 +60,7 @@ export class Data {
         return this.http.get(path)
                         .toPromise()
                         .then(res => {
-                            return Data.mapRemote(res.json());
+                            return Remote.fromJson(res.json());
                         })
                         .catch(e => {
                             throw e;
@@ -75,10 +75,8 @@ export class Data {
                             console.log('saveRemote.response', res);
                             if (res.ok) {
                                 let json = res.json();
-                                return new Remote(
-                                    json.id,
-                                    json.location,
-                                    json.switches
+                                return Remote.fromJson(
+                                    json
                                 );
                             }
                         })
@@ -89,17 +87,7 @@ export class Data {
     }
 
     private static mapRemote(dbValue: any): Remote {
-        var switches: Switch[] = dbValue.switches.map(Data.mapSwitch);
-        return new Remote(dbValue.id, dbValue.location, switches);
-    }
-
-    private static mapSwitch(dbValue: any): Switch {
-        var flips: Flip[] = dbValue.flips.map(Data.mapFlips);
-        return new Switch(dbValue.id, dbValue.state, dbValue.name, flips, dbValue.onPin, dbValue.offPin);
-    }
-
-    private static mapFlips(dbValue: any): Flip {
-        return new Flip(dbValue.id, dbValue.direction, dbValue.hour, dbValue.minute, dbValue.timeOfDay);
+        return Remote.fromJson(dbValue);
     }
 
     private listenForChanges(): void {

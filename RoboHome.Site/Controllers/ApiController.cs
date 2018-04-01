@@ -41,6 +41,7 @@ namespace RoboHome.Controllers
                                                 .Where(r => r.Id == id)
                                                 .Include(r => r.Switches)
                                                 .Include("Switches.Flips")
+                                                .Include("Switches.Flips.Time")
                                                 .FirstAsync();
                 return new ObjectResult(remote);
             } catch(Exception ex) {
@@ -53,34 +54,87 @@ namespace RoboHome.Controllers
         {
             try
             {
-                var dbRemote = await this._context
-                                        .Remotes
-                                        .Where(r => r.Id == remote.Id)
-                                        .Include(r => r.Switches)
-                                        .Include("Switches.Flips")
-                                        .FirstOrDefaultAsync();
-                if (dbRemote == null) {
-
+                if (remote.Id == -1) {
                     var newEntity = await this._context.Remotes
                                         .AddAsync(new Remote(){
                                             Location = remote.Location,
                                             Switches = remote.Switches
                                         });
                     await this._context.SaveChangesAsync();
+                    Console.WriteLine("Remote added");
                     return new ObjectResult(newEntity.Entity);
                 }
-                else 
+                else
                 {
-                    await this.UpdateAndAddSwitches(remote.Switches, dbRemote);
-                    this.RemoveSwitches(remote, dbRemote);
-                    dbRemote.Location = remote.Location;
-                    await this._context.SaveChangesAsync();
+                    var dbRemote = await this._context
+                                            .Remotes
+                                            .Where(r => r.Id == remote.Id)
+                                            .Include(r => r.Switches)
+                                            .Include("Switches.Flips")
+                                            .FirstOrDefaultAsync();
+                    _context.Entry(dbRemote).CurrentValues.SetValues(remote);
+                    foreach (var sw in dbRemote.Switches.ToList()) {
+                        if (!remote.Switches.Any(s => s.Id == sw.Id)) {
+                            _context.Switches.Remove(sw);
+                        }
+                    }
+                    foreach (var sw in remote.Switches)
+                    {
+                        var dbSwitch = _context.Switches.SingleOrDefault(s => s.Id == sw.Id);
+                        if (dbSwitch == null)
+                        {
+                            dbRemote.Switches.Add(new Switch() {
+                                Name = sw.Name,
+                                Number = sw.Number,
+                                Flips = sw.Flips,
+                                OffPin = sw.OffPin,
+                                OnPin = sw.OnPin,
+                                State = sw.State,
+                                RemoteId = dbRemote.Id
+                            });
+                        }
+                        else
+                        {
+                            foreach (var flip in sw.Flips)
+                            {
+                                var dbFlip = _context.Flips.SingleOrDefault(f => f.Id == flip.Id);
+                                if (dbFlip == null)
+                                {
+                                    dbSwitch.Flips.Add(new Flip() {
+                                        Direction = flip.Direction,
+                                        Time = new Time() {
+                                            Hour = flip.Time.Hour,
+                                            Minute = flip.Time.Minute,
+                                            TimeOfDay = flip.Time.TimeOfDay
+                                        },
+                                    });
+                                }
+                                else {
+                                    if (flip.SwitchId != sw.Id)
+                                    {
+                                        flip.SwitchId = sw.Id;
+                                    }
+                                    _context.Entry(dbFlip).CurrentValues.SetValues(flip);
+                                    _context.Entry(dbFlip.Time).CurrentValues.SetValues(flip.Time);
+                                }
+                            }
+                            if (sw.RemoteId != remote.Id)
+                            {
+                                sw.RemoteId = remote.Id;
+                            }
+                            _context.Entry(dbSwitch).CurrentValues.SetValues(sw);
+                        }
+
+                    }
+                    await _context.SaveChangesAsync();
                     return new ObjectResult(dbRemote);
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                var msg = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                Console.WriteLine("Error saving changes {0}", msg);
+                return BadRequest(ex.Message);
             }
         }
 
@@ -107,17 +161,21 @@ namespace RoboHome.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Flip(int switchId, SwitchState newState)
+        public IActionResult Flip(int switchId, SwitchState newState)
         {
             try 
             {
-                var remote = await this._context.Remotes
+                var remote = this._context.Remotes
                                             .Include(r => r.Switches)
                                             .Where(r => r.Switches
                                                         .Select(s => s.Id)
                                                         .Contains(switchId))
-                                            .FirstOrDefaultAsync();
-                this._messenger.SendMessage(remote.Id, new {switch_id = switchId, direction = newState});
+                                            .FirstOrDefault();
+                var sw = remote.Switches.Where(s => s.Id == switchId).FirstOrDefault();
+                sw.State = newState;
+                _context.Entry(sw).CurrentValues.SetValues(sw);
+                this._messenger.SendMessage(remote.Id, new {switch_id = sw.Number, direction = newState});
+                this._context.SaveChanges();
                 return new ObjectResult(null);
             } 
             catch (Exception ex) 
@@ -130,6 +188,7 @@ namespace RoboHome.Controllers
 #region Helpers
         private void RemoveSwitches(Remote remote, Remote dbRemote)
         {
+            Console.WriteLine("RemoteSwitches");
             if (dbRemote.Switches.Count() > remote.Switches.Count())
             {
                 var switchesToDelete = dbRemote.Switches.Where(s =>
@@ -140,83 +199,13 @@ namespace RoboHome.Controllers
             }
         }
 
-        private async Task UpdateAndAddSwitches(List<Switch> clientSwitches, Remote dbRemote)
-        {
-            foreach (var sw in clientSwitches) 
-            {
-                var dbSwitch = await this._context
-                                    .Switches
-                                    .Where(s => s.Id == sw.Id)
-                                    .FirstOrDefaultAsync();
-                if (dbSwitch == null)
-                {
-                    dbRemote.Switches.Add(new Switch(){
-                        Name = sw.Name,
-                        OnPin = sw.OnPin,
-                        OffPin = sw.OffPin,
-                        State = sw.State,
-                        Flips = sw.Flips
-                    });
-                }
-                else
-                {
-                    await UpdateSwitch(sw, dbSwitch);
-                }
-            }
-        }
-
-        private async Task AddSwitch(Switch sw)
-        {
-            await this._context.Flips.AddRangeAsync(sw.Flips);
-            await this._context.Switches.AddAsync(sw);
-        }
-
-        private async Task UpdateSwitch(Switch sw, Switch dbSwitch)
-        {
-            await UpdateAndAddFlips(sw.Flips, sw);
-            dbSwitch.Name = sw.Name;
-            dbSwitch.OffPin = sw.OffPin;
-            dbSwitch.OnPin = sw.OnPin;
-            dbSwitch.State = sw.State;
-            RemoveFlips(sw, dbSwitch);
-        }
-
-        private void RemoveFlips(Switch sw, Switch dbSwitch)
-        {
-            if (dbSwitch.Flips.Count() > sw.Flips.Count())
-            {
-                var flipsToDelete = dbSwitch.Flips.Where(f =>
-                {
-                    return !sw.Flips.Select(t => t.Id).Contains(f.Id);
-                });
-                this._context.Flips.RemoveRange(flipsToDelete);
-            }
-        }
-
-        private async Task UpdateAndAddFlips(List<Flip> flips, Switch dbSwitch)
-        {
-            foreach (var flip in flips)
-            {
-                var dbFlip = await this._context.Flips
-                                                .Where(f => f.Id == flip.Id)
-                                                .FirstOrDefaultAsync();
-                if (dbFlip == null) 
-                {
-                    dbSwitch.Flips.Add(flip);
-                } 
-                else
-                {
-                    UpdateFlip(flip, dbFlip);
-                }
-            }
-        }
-
         private static void UpdateFlip(Flip flip, Flip dbFlip)
         {
+            Console.WriteLine("UpdateFlip");
             dbFlip.Direction = flip.Direction;
-            dbFlip.Hour = flip.Hour;
-            dbFlip.Minute = flip.Minute;
-            dbFlip.TimeOfDay = flip.TimeOfDay;
+            dbFlip.Time.Hour = flip.Time.Hour;
+            dbFlip.Time.Minute = flip.Time.Minute;
+            dbFlip.Time.TimeOfDay = flip.Time.TimeOfDay;
         }
     }
 #endregion

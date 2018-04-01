@@ -17,14 +17,13 @@ namespace RoboHome.Data
     {
         public DbSet<Remote> Remotes { get; set; }
         public DbSet<Switch> Switches { get; set; }
+
         public DbSet<Flip> Flips { get; set; }
-        public DbSet<Flip> PendingFlips { get; set; }
         public DbSet<KeyTime> KeyTimes { get; set; }
         private RoboContext() {}
         public RoboContext(DbContextOptions<RoboContext> options)
             : base(options)
         {
-
         }
 
         protected override void OnModelCreating(ModelBuilder builder)

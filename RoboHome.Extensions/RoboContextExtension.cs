@@ -8,7 +8,7 @@ namespace RoboHome.Data
 {
     public static class RoboContextExtension
     {
-        public static IServiceCollection UseRoboContext(this IServiceCollection services, string connectionString) 
+        public static IServiceCollection UseRoboContext(this IServiceCollection services, string connectionString)
         {
             services.AddDbContext<RoboContext>(options => 
                                                 options.UseNpgsql(connectionString));

@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
-using System.Timers;
+using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RoboHome.Data;
@@ -11,22 +12,19 @@ using RoboHome.Models;
 
 namespace RoboHome.Services
 {
-    public class FlipScheduler
+    public class FlipScheduler: IHostedService
     {
         private string WeatherServiceUri;
         private readonly RoboContext _context;
         private Timer Timer;
-        
+
         public FlipScheduler(string uri, RoboContext context)
         {
             this.WeatherServiceUri = uri;
             this._context = context;
-            this.Timer = new Timer();
-            this.Timer.Elapsed += this.TimerCb;
-            this.Timer.Start();
         }
 
-        public async void TimerCb(object sender, EventArgs e)
+        public async void TimerCb(object state)
         {
             var todaysTimes = this._context
                     .KeyTimes
@@ -38,9 +36,8 @@ namespace RoboHome.Services
                     await this.SaveDailyInfo(times.Value.Item1, times.Value.Item2);
                 }
             }
-            var timer = (Timer)sender;
-            timer.Interval = this.MsToNextMidnight();
-            timer.Start();
+            this.Timer.Change((int)this.MsToNextMidnight(), Timeout.Infinite);
+            this.Timer = new Timer(this.TimerCb, null, TimeSpan.Zero, TimeSpan.FromMilliseconds(this.MsToNextMidnight()));
         }
 
         public async Task<(Time, Time)?> GetDailyInfo()
@@ -117,6 +114,28 @@ namespace RoboHome.Services
         {
             var dt = DateTime.Now;
             return new DateTime(dt.Year, dt.Month, dt.Day, 0, 0, 0);
+        }
+
+        Task IHostedService.StartAsync(CancellationToken cancellationToken)
+        {
+            if (cancellationToken != null && !cancellationToken.IsCancellationRequested)
+            {
+                if (this.Timer == null) {
+                    this.Timer = new Timer(this.TimerCb, null, (int)this.MsToNextMidnight(), Timeout.Infinite);
+                } else {
+                    this.Timer.Change((int)this.MsToNextMidnight(), Timeout.Infinite);
+                }
+            }
+            return Task.CompletedTask;
+        }
+
+        Task IHostedService.StopAsync(CancellationToken cancellationToken)
+        {
+            if (cancellationToken != null && !cancellationToken.IsCancellationRequested) {
+                this.Timer.Change(Timeout.Infinite, Timeout.Infinite);
+                this.Timer = null;
+            }
+            return Task.CompletedTask;
         }
     }
 

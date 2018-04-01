@@ -12,9 +12,10 @@ using System;
 namespace projects.Migrations
 {
     [DbContext(typeof(RoboContext))]
-    partial class RoboContextModelSnapshot : ModelSnapshot
+    [Migration("20180329024624_thing")]
+    partial class thing
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -67,8 +68,6 @@ namespace projects.Migrations
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn);
 
                     b.Property<string>("Name");
-
-                    b.Property<int>("Number");
 
                     b.Property<int>("OffPin");
 
