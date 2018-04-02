@@ -13,8 +13,8 @@
         </select>
     </div>
     <div class="radio-container">
-        <div class="radio-option">Off to On <input type="radio" value="0" name="direction-{{flip.id}}" [(ngModel)]="direction" /></div>
-        <div class="radio-option">On to Off <input type="radio" value="1" name="direction-{{flip.id}}" [(ngModel)]="direction" /></div>
+        <div class="radio-option">Off to On <input type="radio" value="1" name="direction-{{flip.id}}" [(ngModel)]="direction" /></div>
+        <div class="radio-option">On to Off <input type="radio" value="0" name="direction-{{flip.id}}" [(ngModel)]="direction" /></div>
     </div>
     <button class="extra-small square" color="error"(click)="deleteSelf()">X</button>
 </div>
