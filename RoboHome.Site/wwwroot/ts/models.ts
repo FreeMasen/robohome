@@ -6,3 +6,4 @@ export {Flip} from './models/flip';
 export {SwitchState} from './models/SwitchState';
 export {TimeOfDay} from './models/TimeOfDay';
 export {Time} from './models/time';
+export {TimeType} from './models/time';

@@ -1,20 +1,72 @@
 <div class="flip-container">
-    <div class="time">
-        <input [(ngModel)]="hour" name="hour" type="number" max="12" min="1" />
-        <span>:</span>
-        <input [(ngModel)]="minute" name="minute" type="number" max="59" min="0" />
-        <select [(ngModel)]="tod">
-            <option value="0">
-                AM
-            </option>
-            <option value="1">
-                PM
-            </option>
-        </select>
+    <div class="flip-tabs">
+        <div class="flip-tab" (click)="setTimeType(0)" [ngClass]="{selected: timeType == '0'}">
+            <span class="tab-title">Custom</span>
+        </div>
+        <div class="flip-tab" (click)="setTimeType(1)" [ngClass]="{selected: timeType != '0'}">
+            <span class="tab-title">Time Of Day</span>
+        </div>
     </div>
-    <div class="radio-container">
-        <div class="radio-option">Off to On <input type="radio" value="1" name="direction-{{flip.id}}" [(ngModel)]="direction" /></div>
-        <div class="radio-option">On to Off <input type="radio" value="0" name="direction-{{flip.id}}" [(ngModel)]="direction" /></div>
+    <div class="tab-content">
+        <div class="time" *ngIf="timeType == '0'">
+            <input [(ngModel)]="hour" name="hour" type="number" max="12" min="1" />
+            <span>:</span>
+            <input [(ngModel)]="minute" name="minute" type="number" max="59" min="0" />
+            <select [(ngModel)]="tod">
+                <option value="0">
+                    AM
+                </option>
+                <option value="1">
+                    PM
+                </option>
+            </select>
+        </div>
+        <div class="time special" *ngIf="timeType != '0'">
+            <div class="time-options">
+                <div class="radio-option" [ngClass]="{selected: timeType == 1}">
+                    Dawn
+                </div>
+                <div class="radio-option" [ngClass]="{selected: timeType == 2}">
+                    Noon
+                </div>
+                <div class="radio-option" [ngClass]="{selected: timeType == 3}">
+                    Sunset
+                </div>
+                <div class="radio-option" [ngClass]="{selected: timeType == 4}">
+                    Dusk
+                </div>
+                <div class="radio-option" [ngClass]="{selected: timeType == 5}">
+                    Midnight
+                </div>
+            </div>
+        </div>
+        <div class="week-days">
+            <div class="radio-option" (click)="toggleDow(2)" [ngClass]="{selected: dow(2)}">
+                Monday
+            </div>
+            <div class="radio-option" (click)="toggleDow(4)" [ngClass]="{selected: dow(4)}">
+                Tuesday
+            </div>
+            <div class="radio-option" (click)="toggleDow(8)" [ngClass]="{selected: dow(8)}">
+                Wednesday
+            </div>
+            <div class="radio-option" (click)="toggleDow(16)" [ngClass]="{selected: dow(16)}">
+                Thursday
+            </div>
+            <div class="radio-option" (click)="toggleDow(32)" [ngClass]="{selected: dow(32)}">
+                Friday
+            </div>
+            <div class="radio-option" (click)="toggleDow(64)" [ngClass]="{selected: dow(64)}">
+                Saturday
+            </div>
+            <div class="radio-option" (click)="toggleDow(1)" [ngClass]="{selected: dow(1)}">
+                Sunday
+            </div>
+        </div>
+        <div class="radio-container">
+            <div class="radio-option">Off to On <input type="radio" value="1" name="direction-{{flip.id}}" [(ngModel)]="direction" /></div>
+            <div class="radio-option">On to Off <input type="radio" value="0" name="direction-{{flip.id}}" [(ngModel)]="direction" /></div>
+        </div>
+        <button class="extra-small square" color="error"(click)="deleteSelf()">X</button>
     </div>
-    <button class="extra-small square" color="error"(click)="deleteSelf()">X</button>
 </div>

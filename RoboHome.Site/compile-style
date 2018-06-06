@@ -1,0 +1,7 @@
+sass ./wwwroot/sass/dashboard.scss ./wwwroot/css/dashboard.css
+sass ./wwwroot/sass/flip.scss ./wwwroot/css/flip.css
+sass ./wwwroot/sass/remote.scss ./wwwroot/css/remote.css
+sass ./wwwroot/sass/remotes.scss ./wwwroot/css/remotes.css
+sass ./wwwroot/sass/style.scss ./wwwroot/css/style.css
+sass ./wwwroot/sass/switch.scss ./wwwroot/css/switch.css
+sass ./wwwroot/sass/switchPlate.scss ./wwwroot/css/switchPlate.css

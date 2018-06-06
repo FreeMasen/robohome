@@ -42,35 +42,27 @@ export class RemoteEditor implements OnInit {
 
     remoteChange(event): void {
         console.log('remoteChange', event);
-        this.saveChanges();
+        // this.saveChanges();
     }
 
     switchChange(event): void {
         console.log('RemoteEditor.switchChange', event);
-        this.saveChanges();
+        // this.saveChanges();
     }
 
     childDeleted(child): void {
-        console.log('RemoteEditor.childDeleted', event);
+        console.log('RemoteEditor.childDeleted', child);
         if (child instanceof Switch) {
             var index = this.remote.switches.indexOf(child);
             if (index > -1) {
                 this.remote.switches.splice(index, 1);
             }
         }
-        this.saveChanges();
+        // this.saveChanges();
     }
 
     addRemote(remote:Remote): void {
         this.remote = remote;
-        // this.saved(true);
-    }
-
-    get lastSaved(): string {
-        if (!this._lastSaved) return '';
-        var now = new Date();
-        var secondsAgo = Math.floor((now.getTime() - this._lastSaved.getTime()) / 1000)
-        return secondsAgo + ' seconds ago';
     }
 
     addSwitch(): void {
@@ -79,26 +71,20 @@ export class RemoteEditor implements OnInit {
 
     private saveChanges(): void {
         if (!this.isValid())
-            return this.saved(null, true);
+            return //this.saved(null, true);
         this.data.saveRemote(this.remote)
         .then(remote => this.saved(remote))
         .catch(e => {throw e});
     }
 
-    private saved(newRemote?: Remote, invalid: boolean = false): void {
-        if (newRemote) {
-            this.remote = newRemote;
-            this._lastSaved = new Date();
-        } else {
-            if (!invalid) {
-                setTimeout(this.saveChanges.bind(this), 5000);
-            }
-        }
+    private saved(newRemote: Remote): void {
+        if (!newRemote) return;
+        this.remote = newRemote;
     }
 
     private isValid(): boolean {
         if (!this.remote.location || this.remote.location == '') {
-            console.warn('Invalid switch location', this.remote);
+            console.warn('Invalid remote location', this.remote);
             return false;
         }
         return this.validateSwitches(...this.remote.switches);

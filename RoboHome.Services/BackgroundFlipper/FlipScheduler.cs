@@ -90,7 +90,7 @@ namespace RoboHome.Services
                     Date = today,
                     Time = new Time() {
                                 TimeType = TimeType.Dusk,
-                                Hour = sunrise.Hour - 1,
+                                Hour = sunset.Hour - 1,
                                 Minute = sunset.Minute,
                             }
                 },

@@ -2,12 +2,31 @@
 
 .flip-container {
     display: flex;
-    flex-flow: row;
+    flex-flow: column;
     padding: 5px;
     margin: 10px;
     border-radius: 5px;
     font-size: 12pt;
     background: $primary;
+    .flip-tabs {
+        display: flex;
+        flex-flow: row;
+        .flip-tab {
+            display: block;
+            border-radius: 5px 5px 0 0;
+            border: 1px solid $primary-dark;
+            width: 50%;
+            margin: 0 5px;
+            text-align: center;
+            font-size: 18pt;
+            cursor: pointer;
+            &.selected {
+                background: $secondary;
+                border: 1px solid $secondary-dark;
+                color: $primary-dark;
+            }
+        }
+    }
     button {
         margin-left: 5px;
         align-self: center;
@@ -35,8 +54,32 @@
         align-self: center;
         margin: 0 2px;
     }
+
+    &.special {
+        .time-options {
+            display: flex;
+            flex-flow: row wrap;
+        }
+    }
 }
 
+.week-days,
+.time-options {
+    display: flex;
+    flex-flow: row wrap;
+    .radio-option {
+        padding: 2px;
+        margin: 2px;
+        background: $primary-dark;
+        border-radius: 5px;
+        border: 1px solid $primary-light;
+        cursor: pointer;
+        &.selected {
+            background: $secondary;
+            color: $primary-dark;
+        }
+    }
+}
 .radio-container {
     display: flex;
     flex-flow: column;

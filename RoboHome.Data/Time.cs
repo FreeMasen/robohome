@@ -49,6 +49,7 @@ namespace RoboHome.Models
         }
         public TimeOfDay TimeOfDay { get; set; }
         public TimeType TimeType { get; set; }
+        public WeekDay DayOfWeek { get; set; }
         public static Time Noon
         {
             get
@@ -96,7 +97,18 @@ namespace RoboHome.Models
         Sunset,
         Dusk,
         Midnight
-        
+
     }
 
+    [Flags]
+    public enum WeekDay
+    {
+        Sunday, //1
+        Monday, //2
+        Tuesday, //4
+        Wednesday, //8
+        Thursday, //16
+        Friday, //32
+        Saturday //64
+    }
 }

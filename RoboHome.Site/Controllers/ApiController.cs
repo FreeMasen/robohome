@@ -71,6 +71,7 @@ namespace RoboHome.Controllers
                                             .Where(r => r.Id == remote.Id)
                                             .Include(r => r.Switches)
                                             .Include("Switches.Flips")
+                                            .Include("Switches.Flips.Time")
                                             .FirstOrDefaultAsync();
                     _context.Entry(dbRemote).CurrentValues.SetValues(remote);
                     foreach (var sw in dbRemote.Switches.ToList()) {
@@ -81,7 +82,7 @@ namespace RoboHome.Controllers
                     foreach (var sw in remote.Switches)
                     {
                         var dbSwitch = _context.Switches.SingleOrDefault(s => s.Id == sw.Id);
-                        if (dbSwitch == null)
+                        if (sw.Id == -1 || dbSwitch == null)
                         {
                             dbRemote.Switches.Add(new Switch() {
                                 Name = sw.Name,
@@ -95,17 +96,24 @@ namespace RoboHome.Controllers
                         }
                         else
                         {
+                            foreach (var flip in dbSwitch.Flips.ToList()) {
+                                if (!sw.Flips.Any(f => f.Id == flip.Id)) {
+                                    this._context.Flips.Remove(flip);
+                                }
+                            }
                             foreach (var flip in sw.Flips)
                             {
                                 var dbFlip = _context.Flips.SingleOrDefault(f => f.Id == flip.Id);
-                                if (dbFlip == null)
+                                if (flip.Id == -1 || dbFlip == null)
                                 {
                                     dbSwitch.Flips.Add(new Flip() {
                                         Direction = flip.Direction,
                                         Time = new Time() {
                                             Hour = flip.Time.Hour,
                                             Minute = flip.Time.Minute,
-                                            TimeOfDay = flip.Time.TimeOfDay
+                                            TimeOfDay = flip.Time.TimeOfDay,
+                                            TimeType = flip.Time.TimeType,
+                                            DayOfWeek = flip.Time.DayOfWeek,
                                         },
                                     });
                                 }
@@ -127,7 +135,13 @@ namespace RoboHome.Controllers
 
                     }
                     await _context.SaveChangesAsync();
-                    return new ObjectResult(dbRemote);
+                    var toSend = await this._context
+                                            .Remotes
+                                            .Where(r => r.Id == remote.Id)
+                                            .Include(r => r.Switches)
+                                            .Include("Switches.Flips")
+                                            .FirstOrDefaultAsync();
+                    return new ObjectResult(toSend);
                 }
             }
             catch (Exception ex)

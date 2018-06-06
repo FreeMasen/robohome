@@ -17,3 +17,5 @@ RoboHome.Listener/**/*.js.map
 
 robohome_listener/target/**/*
 robohome_listener/settings.toml
+
+/**/.sass-cache

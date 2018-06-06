@@ -1,7 +1,7 @@
 const webpack = require('webpack');
 const text = require('extract-text-webpack-plugin');
 const html = require('html-webpack-plugin');
-const sass = require('node-sass');
+// const sass = require('node-sass');
 
 module.exports = function(env) {
     var config = {};
@@ -52,23 +52,23 @@ module.exports = function(env) {
     }
     return config;
 }
-function compileCss(env) {
-    console.log('Compiling css for ', env);
-    var config = {};
-    config.file = __dirname + '/RoboHome.Site/wwwroot/sass/style.scss';
-    config.outFile = __dirname + '/RoboHome.Site/wwwroot/css/style.css'
-    if (env === 'prod') {
-        config.outputStyle = 'compressed';
-    } else {
-        config.outputStyle = 'expanded';
-        config.sourceMap = true;
-    }
+// function compileCss(env) {
+//     console.log('Compiling css for ', env);
+//     var config = {};
+//     config.file = __dirname + '/RoboHome.Site/wwwroot/sass/style.scss';
+//     config.outFile = __dirname + '/RoboHome.Site/wwwroot/css/style.css'
+//     if (env === 'prod') {
+//         config.outputStyle = 'compressed';
+//     } else {
+//         config.outputStyle = 'expanded';
+//         config.sourceMap = true;
+//     }
     
-    var css = sass.renderSync(config);
-    var fs = require('fs');
-    fs.writeFileSync(config.outFile, css.css);
-    if (config.sourceMap) {
-        fs.writeFileSync(config.outFile + '.map', css.map);
-    }
-    console.log('Compiling complete');
-}
+//     var css = sass.renderSync(config);
+//     var fs = require('fs');
+//     fs.writeFileSync(config.outFile, css.css);
+//     if (config.sourceMap) {
+//         fs.writeFileSync(config.outFile + '.map', css.map);
+//     }
+//     console.log('Compiling complete');
+// }

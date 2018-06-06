@@ -57,12 +57,18 @@ namespace RoboHome.Services
 
         public List<Flip> GetFlips(int hour, int min, TimeOfDay tod)
         {
-            return this._context
-                        .Flips
-                        .Where(f => f.Time.Hour == hour &&
-                                f.Time.Minute == min &&
-                                f.Time.TimeOfDay == tod)
-                        .ToList();
+            try {
+                return this._context
+                            .Flips
+                            .Where(f => f.Time.Hour == hour &&
+                                    f.Time.Minute == min &&
+                                    f.Time.TimeOfDay == tod &&
+                                    (f.Time.DayOfWeek & this.TodayDoW()) > 0)
+                            .ToList();
+            } catch (Exception ex) {
+                Console.WriteLine("Error getting flips {0}", ex);
+                throw ex;
+            }
         }
 
         Task IHostedService.StartAsync(CancellationToken cancellationToken)
@@ -86,5 +92,27 @@ namespace RoboHome.Services
             }
             return Task.CompletedTask;
         }
+
+        private WeekDay TodayDoW() {
+            switch (DateTime.Today.DayOfWeek) {
+                case DayOfWeek.Sunday:
+                    return WeekDay.Sunday;
+                case DayOfWeek.Monday:
+                    return WeekDay.Monday;
+                case DayOfWeek.Tuesday:
+                    return WeekDay.Tuesday;
+                case DayOfWeek.Wednesday:
+                    return WeekDay.Wednesday;
+                case DayOfWeek.Thursday:
+                    return WeekDay.Thursday;
+                case DayOfWeek.Friday:
+                    return WeekDay.Friday;
+                case DayOfWeek.Saturday:
+                    return WeekDay.Saturday;
+                default:
+                    throw new Exception("Unknown Day of the week");
+            }
+        }
     }
+
 }
