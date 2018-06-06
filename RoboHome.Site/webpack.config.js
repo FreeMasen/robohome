@@ -1,9 +1,11 @@
 const webpack = require('webpack');
 const text = require('extract-text-webpack-plugin');
 const html = require('html-webpack-plugin');
-// const sass = require('node-sass');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+
 
 module.exports = function(env) {
+    console.log('webpack running for', env == 'prod' ? 'production' : 'development');
     var config = {};
     config.entry = {
         pollyfills: __dirname + '/wwwroot/ts/pollyfills.ts',
@@ -46,29 +48,9 @@ module.exports = function(env) {
         )
     ]
     if (env === 'prod') {
-
+        config.plugins.push(new UglifyJsPlugin())
     } else {
         config.devtool = 'eval-cheap-module-source-map';
     }
     return config;
 }
-// function compileCss(env) {
-//     console.log('Compiling css for ', env);
-//     var config = {};
-//     config.file = __dirname + '/RoboHome.Site/wwwroot/sass/style.scss';
-//     config.outFile = __dirname + '/RoboHome.Site/wwwroot/css/style.css'
-//     if (env === 'prod') {
-//         config.outputStyle = 'compressed';
-//     } else {
-//         config.outputStyle = 'expanded';
-//         config.sourceMap = true;
-//     }
-    
-//     var css = sass.renderSync(config);
-//     var fs = require('fs');
-//     fs.writeFileSync(config.outFile, css.css);
-//     if (config.sourceMap) {
-//         fs.writeFileSync(config.outFile + '.map', css.map);
-//     }
-//     console.log('Compiling complete');
-// }
