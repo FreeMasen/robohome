@@ -23,19 +23,19 @@
         </div>
         <div class="time special" *ngIf="timeType != '0'">
             <div class="time-options">
-                <div class="radio-option" [ngClass]="{selected: timeType == 1}">
+                <div class="radio-option" (click)="setSpecialTime(1)" [ngClass]="{selected: timeType == 1}">
                     Dawn
                 </div>
-                <div class="radio-option" [ngClass]="{selected: timeType == 2}">
+                <div class="radio-option" (click)="setSpecialTime(2)" [ngClass]="{selected: timeType == 2}">
                     Noon
                 </div>
-                <div class="radio-option" [ngClass]="{selected: timeType == 3}">
+                <div class="radio-option" (click)="setSpecialTime(3)" [ngClass]="{selected: timeType == 3}">
                     Sunset
                 </div>
-                <div class="radio-option" [ngClass]="{selected: timeType == 4}">
+                <div class="radio-option" (click)="setSpecialTime(4)" [ngClass]="{selected: timeType == 4}">
                     Dusk
                 </div>
-                <div class="radio-option" [ngClass]="{selected: timeType == 5}">
+                <div class="radio-option" (click)="setSpecialTime(5)" [ngClass]="{selected: timeType == 5}">
                     Midnight
                 </div>
             </div>

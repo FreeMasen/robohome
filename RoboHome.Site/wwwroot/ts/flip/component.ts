@@ -22,7 +22,10 @@ export class FlipEditor {
     get timeType(): string {
         return this.flip.time.timeType.toString();
     }
-
+    setSpecialTime(time) {
+        console.log('setSpecialTime', time, 'from', this.flip.time.timeType);
+        this.flip.time.timeType = time;
+    }
     set timeType(value: string) {
         try {
             this.flip.time.timeType = parseInt(value);
