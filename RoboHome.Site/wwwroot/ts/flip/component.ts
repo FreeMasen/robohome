@@ -28,7 +28,9 @@ export class FlipEditor {
         switch (this.flip.time.timeType) {
             case TimeType.Dawn:
                 let dbDawn = await this.data.getDawn();
-                this.flip.time = dbDawn;
+                this.flip.time.hour = dbDawn.hour;
+                this.flip.time.minute = dbDawn.minute;
+                this.flip.time.timeOfDay = dbDawn.timeOfDay;
             break;
             case TimeType.Noon:
                 this.flip.time.hour = 12;
@@ -37,11 +39,15 @@ export class FlipEditor {
             break;
             case TimeType.Sunset:
                 let dbSunset = await this.data.getSunset();
-                this.flip.time = dbSunset;
+                this.flip.time.hour = dbSunset.hour;
+                this.flip.time.minute = dbSunset.minute;
+                this.flip.time.timeOfDay = dbSunset.timeOfDay;
             break;
             case TimeType.Dusk:
                 let dbDusk = await this.data.getDusk();
-                this.flip.time = dbDusk;
+                this.flip.time.hour = dbDusk.hour;
+                this.flip.time.minute = dbDusk.minute;
+                this.flip.time.timeOfDay = dbDusk.timeOfDay;
             break;
             case TimeType.Midnight:
                 this.flip.time.hour = 12;
