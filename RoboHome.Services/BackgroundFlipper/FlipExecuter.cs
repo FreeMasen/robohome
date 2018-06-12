@@ -27,31 +27,34 @@ namespace RoboHome.Services
 
         public void TimerCb(object state)
         {
-            var hour = DateTime.Now.Hour;
-            var min = DateTime.Now.Minute;
-            var tod = TimeOfDay.AM;
-            if (hour > 12) {
-                hour -= 12;
-                tod = TimeOfDay.PM;
-            }
-            System.Console.WriteLine("Checking for flips this minute {0}:{1} {2}", hour, min, tod);
-            if (hour >= 12)
-            {
-                tod = TimeOfDay.PM;
-            }
-            var flips = this.GetFlips(hour, min, tod);
-            foreach (var flip in flips)
-            {
-                var remote = this._context.Remotes
-                                    .Where(r => r.Switches.Any(s => s.Id == flip.SwitchId))
-                                    .FirstOrDefault();
-                var sw = this._context.Switches.SingleOrDefault(s => s.Id == flip.SwitchId);
-                var msg = new {switch_id = sw.Number, direction = flip.Direction};
-                this._messenger.SendMessage(remote.Id, msg);
-                if (sw != null) {
-                    sw.State = flip.Direction;
-                    this._context.SaveChanges();
+            try {
+                var hour = DateTime.Now.Hour;
+                var min = DateTime.Now.Minute;
+                var tod = TimeOfDay.AM;
+                if (hour > 12) {
+                    hour -= 12;
+                    tod = TimeOfDay.PM;
                 }
+                if (hour >= 12)
+                {
+                    tod = TimeOfDay.PM;
+                }
+                var flips = this.GetFlips(hour, min, tod);
+                foreach (var flip in flips)
+                {
+                    var remote = this._context.Remotes
+                                        .Where(r => r.Switches.Any(s => s.Id == flip.SwitchId))
+                                        .FirstOrDefault();
+                    var sw = this._context.Switches.SingleOrDefault(s => s.Id == flip.SwitchId);
+                    var msg = new {switch_id = sw.Number, direction = flip.Direction};
+                    this._messenger.SendMessage(remote.Id, msg);
+                    if (sw != null) {
+                        sw.State = flip.Direction;
+                        this._context.SaveChanges();
+                    }
+                }
+            } catch (Exception ex) {
+                Console.WriteLine("Error flipping in background {0}", ex.Message);
             }
         }
 

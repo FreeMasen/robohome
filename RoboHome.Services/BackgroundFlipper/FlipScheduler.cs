@@ -26,18 +26,23 @@ namespace RoboHome.Services
 
         public async void TimerCb(object state)
         {
-            var todaysTimes = this._context
-                    .KeyTimes
-                    .Where(time => time.Date == DateTime.Today)
-                    .ToList();
-            if (todaysTimes.Count() < 4) {
-                var times = await this.GetDailyInfo();
-                if (times.HasValue) {
-                    await this.SaveDailyInfo(times.Value.Item1, times.Value.Item2);
+            try {
+                var todaysTimes = this._context
+                        .KeyTimes
+                        .Where(time => time.Date == DateTime.Today)
+                        .ToList();
+                if (todaysTimes.Count() < 4) {
+                    var times = await this.GetDailyInfo();
+                    if (times.HasValue) {
+                        await this.SaveDailyInfo(times.Value.Item1, times.Value.Item2);
+                    }
                 }
+                this.Timer.Change((int)this.MsToNextMidnight(), Timeout.Infinite);
+                this.Timer = new Timer(this.TimerCb, null, TimeSpan.Zero, TimeSpan.FromMilliseconds(this.MsToNextMidnight()));
+            } catch (Exception ex) {
+                Console.WriteLine("Error getting today's times {0}", ex.Message);
+                this.Timer.Change(10000, Timeout.Infinite);
             }
-            this.Timer.Change((int)this.MsToNextMidnight(), Timeout.Infinite);
-            this.Timer = new Timer(this.TimerCb, null, TimeSpan.Zero, TimeSpan.FromMilliseconds(this.MsToNextMidnight()));
         }
 
         public async Task<(Time, Time)?> GetDailyInfo()
@@ -72,6 +77,7 @@ namespace RoboHome.Services
 
         private async Task SaveDailyInfo(Time sunrise, Time sunset)
         {
+            try {
             var today = LastMidnight();
             var keyTimes = new List<KeyTime>() {
                 new KeyTime() {
@@ -101,6 +107,9 @@ namespace RoboHome.Services
             };
             await this._context.KeyTimes.AddRangeAsync(keyTimes);
             await this._context.SaveChangesAsync();
+            } catch (Exception ex) {
+                Console.WriteLine("Error updating key times {0}", ex.Message);
+            }
         }
 
         private double MsToNextMidnight()
