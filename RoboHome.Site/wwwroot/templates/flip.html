@@ -1,9 +1,9 @@
 <div class="flip-container">
     <div class="flip-tabs">
-        <div class="flip-tab" (click)="setTimeType(0)" [ngClass]="{selected: timeType == '0'}">
+        <div class="flip-tab" (click)="setSpecialTime(0)" [ngClass]="{selected: timeType == '0'}">
             <span class="tab-title">Custom</span>
         </div>
-        <div class="flip-tab" (click)="setTimeType(1)" [ngClass]="{selected: timeType != '0'}">
+        <div class="flip-tab" (click)="setSpecialTime(1)" [ngClass]="{selected: timeType != '0'}">
             <span class="tab-title">Time Of Day</span>
         </div>
     </div>
