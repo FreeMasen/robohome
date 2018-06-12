@@ -1,11 +1,27 @@
 const webpack = require('webpack');
-const text = require('extract-text-webpack-plugin');
-const html = require('html-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
-
+const path = require('path');
 
 module.exports = function(env) {
-    console.log('webpack running for', env == 'prod' ? 'production' : 'development');
+    let outDir = path.join(__dirname, 'wwwroot', 'js');
+    let devtool = null;
+    let envDesc;
+    let minify = false;
+    switch (env) {
+        case 'prod':
+            envDesc = 'production';
+            minify = true;
+        break;
+        case 'js-only':
+            outDir = path.join(__dirname, 'bin', 'Release', 'netcoreapp2.0', 'publish', 'wwwroot', 'js');
+            envDesc = 'production (js-only)';
+            minify = true;
+        break;
+        default:
+            devtool = 'source-map';
+        break;
+    }
+    console.log('webpack running for', envDesc);
     var config = {};
     config.entry = {
         pollyfills: __dirname + '/wwwroot/ts/pollyfills.ts',
@@ -14,7 +30,7 @@ module.exports = function(env) {
         worker: __dirname + '/wwwroot/ts/worker.ts'
     };
     config.output = {
-        path: __dirname + '/wwwroot/js/',
+        path: outDir,
         publicPath: '/wwwroot/js/',
         filename: '[name].js',
         sourceMapFilename: '[name].js.map'
@@ -47,10 +63,9 @@ module.exports = function(env) {
             {} // a map of your routes
         )
     ]
-    if (env === 'prod') {
+    if (minify) {
         config.plugins.push(new UglifyJsPlugin())
-    } else {
-        config.devtool = 'eval-cheap-module-source-map';
     }
+    config.devtool = devtool;
     return config;
 }
