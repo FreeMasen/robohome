@@ -89,14 +89,14 @@ namespace RoboHome.Services
                     }
                 },
                 new KeyTime() {
-                    Date = today,                     
+                    Date = today,
                     Time = sunrise
                 },
                 new KeyTime() {
                     Date = today,
                     Time = new Time() {
                                 TimeType = TimeType.Dusk,
-                                Hour = sunset.Hour - 1,
+                                Hour = sunset.Hour + 1,
                                 Minute = sunset.Minute,
                             }
                 },
@@ -109,6 +109,7 @@ namespace RoboHome.Services
             await this._context.SaveChangesAsync();
             } catch (Exception ex) {
                 Console.WriteLine("Error updating key times {0}", ex.Message);
+                throw ex;
             }
         }
 
