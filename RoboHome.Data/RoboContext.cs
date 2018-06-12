@@ -28,9 +28,6 @@ namespace RoboHome.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<KeyTime>(t => {
-                t.HasKey("Date");
-            });
 
             builder.Entity<KeyTime>(t => {
                 t.OwnsOne(c => c.Time);

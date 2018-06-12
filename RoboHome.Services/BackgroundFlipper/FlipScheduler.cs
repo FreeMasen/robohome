@@ -27,11 +27,11 @@ namespace RoboHome.Services
         public async void TimerCb(object state)
         {
             try {
-                var todaysTimes = this._context
+                var timesCount = this._context
                         .KeyTimes
                         .Where(time => time.Date == DateTime.Today)
-                        .ToList();
-                if (todaysTimes.Count() < 4) {
+                        .Count();
+                if (timesCount < 4) {
                     var times = await this.GetDailyInfo();
                     if (times.HasValue) {
                         await this.SaveDailyInfo(times.Value.Item1, times.Value.Item2);
@@ -40,7 +40,7 @@ namespace RoboHome.Services
                 this.Timer.Change((int)this.MsToNextMidnight(), Timeout.Infinite);
                 this.Timer = new Timer(this.TimerCb, null, TimeSpan.Zero, TimeSpan.FromMilliseconds(this.MsToNextMidnight()));
             } catch (Exception ex) {
-                Console.WriteLine("Error getting today's times {0}", ex.Message);
+                Console.WriteLine("Error getting today's times\n{0}\n\ntrying again", ex.Message);
                 this.Timer.Change(10000, Timeout.Infinite);
             }
         }
@@ -69,7 +69,7 @@ namespace RoboHome.Services
                 }
             } catch (Exception e) {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(e.Message);
+                Console.WriteLine("Error in GetDailyInfo\n{0}", e.Message);
                 Console.ResetColor();
             }
                 return null;
@@ -78,37 +78,36 @@ namespace RoboHome.Services
         private async Task SaveDailyInfo(Time sunrise, Time sunset)
         {
             try {
-            var today = LastMidnight();
-            var keyTimes = new List<KeyTime>() {
-                new KeyTime() {
-                    Date = today,
-                    Time = new Time() {
-                                TimeType = TimeType.Dawn,
-                                Hour = sunrise.Hour - 1,
-                                Minute = sunrise.Minute
+                var keyTimes = new List<KeyTime>() {
+                    new KeyTime() {
+                        Date = DateTime.Today,
+                        Time = new Time() {
+                                    TimeType = TimeType.Dawn,
+                                    Hour = sunrise.Hour - 1,
+                                    Minute = sunrise.Minute
+                        }
+                    },
+                    new KeyTime() {
+                        Date = DateTime.Today,
+                        Time = sunrise
+                    },
+                    new KeyTime() {
+                        Date = DateTime.Today,
+                        Time = new Time() {
+                                    TimeType = TimeType.Dusk,
+                                    Hour = sunset.Hour + 1,
+                                    Minute = sunset.Minute,
+                                }
+                    },
+                    new KeyTime() {
+                        Date = DateTime.Today,
+                        Time = sunset
                     }
-                },
-                new KeyTime() {
-                    Date = today,
-                    Time = sunrise
-                },
-                new KeyTime() {
-                    Date = today,
-                    Time = new Time() {
-                                TimeType = TimeType.Dusk,
-                                Hour = sunset.Hour + 1,
-                                Minute = sunset.Minute,
-                            }
-                },
-                new KeyTime() {
-                    Date = today,
-                    Time = sunset
-                }
-            };
-            await this._context.KeyTimes.AddRangeAsync(keyTimes);
-            await this._context.SaveChangesAsync();
+                };
+                await this._context.KeyTimes.AddRangeAsync(keyTimes);
+                await this._context.SaveChangesAsync();
             } catch (Exception ex) {
-                Console.WriteLine("Error updating key times {0}", ex.Message);
+                Console.WriteLine("Error updating key times\n{0}", ex.Message);
                 throw ex;
             }
         }
@@ -131,7 +130,7 @@ namespace RoboHome.Services
             if (cancellationToken != null && !cancellationToken.IsCancellationRequested)
             {
                 if (this.Timer == null) {
-                    this.Timer = new Timer(this.TimerCb, null, (int)this.MsToNextMidnight(), Timeout.Infinite);
+                    this.Timer = new Timer(this.TimerCb, null, 0, Timeout.Infinite);
                 } else {
                     this.Timer.Change((int)this.MsToNextMidnight(), Timeout.Infinite);
                 }

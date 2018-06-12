@@ -1,6 +1,6 @@
 import {Component, Input, Output, EventEmitter} from '@angular/core';
 import {Form} from '@angular/forms';
-
+import {Data} from '../services';
 import {Flip, SwitchState, TimeOfDay, TimeType} from '../models';
 
 @Component({
@@ -14,7 +14,7 @@ export class FlipEditor {
 
     @Output()
     deleteHandler = new EventEmitter<Flip>();
-
+    constructor(private data: Data){}
     deleteSelf(): void {
         this.deleteHandler.emit(this.flip);
     }
@@ -22,9 +22,33 @@ export class FlipEditor {
     get timeType(): string {
         return this.flip.time.timeType.toString();
     }
-    setSpecialTime(time) {
+    async setSpecialTime(time: number) {
         console.log('setSpecialTime', time, 'from', this.flip.time.timeType);
         this.flip.time.timeType = time;
+        switch (this.flip.time.timeType) {
+            case TimeType.Dawn:
+                let dbDawn = await this.data.getDawn();
+                this.flip.time = dbDawn;
+            break;
+            case TimeType.Noon:
+                this.flip.time.hour = 12;
+                this.flip.time.minute = 0;
+                this.flip.time.timeOfDay = TimeOfDay.Pm;
+            break;
+            case TimeType.Sunset:
+                let dbSunset = await this.data.getSunset();
+                this.flip.time = dbSunset;
+            break;
+            case TimeType.Dusk:
+                let dbDusk = await this.data.getDusk();
+                this.flip.time = dbDusk;
+            break;
+            case TimeType.Midnight:
+                this.flip.time.hour = 12;
+                this.flip.time.minute = 0;
+                this.flip.time.timeOfDay = TimeOfDay.Am;
+            break;
+        }
     }
     set timeType(value: string) {
         try {

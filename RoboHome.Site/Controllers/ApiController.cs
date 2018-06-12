@@ -26,6 +26,7 @@ namespace RoboHome.Controllers
                 var remotes = await this._context.Remotes
                                                 .Include(r => r.Switches)
                                                 .Include("Switches.Flips")
+                                                .Include("Switches.Flips.Time")
                                                 .ToListAsync();
                 return new ObjectResult(remotes);
             } catch(Exception ex) {
@@ -197,6 +198,26 @@ namespace RoboHome.Controllers
                 Console.WriteLine(ex.Message);
                 return new ObjectResult(ex.Message);
             }
+        }
+        [HttpGet("/api/keyTimes")]
+        public IActionResult KeyTimes() {
+            Console.WriteLine("KeyTimes");
+            var times = this._context.KeyTimes
+                        .Where(time => time.Date == DateTime.Today)
+                        .ToList();
+            foreach (var t in times) {
+                Console.WriteLine("{0}-{1}", t.Date,t.Time);
+            }
+            var ret = new Dictionary<string, dynamic>();
+            var dt = times[0].Date;
+            ret["month"] = dt.Month;
+            ret["day"] = dt.Day;
+            ret["year"] = dt.Year;
+            ret["dawn"] = times.Find(t => t.Time.TimeType == TimeType.Dawn);
+            ret["sunrise"] = times.Find(t => t.Time.TimeType == TimeType.Sunrise);
+            ret["sunset"] = times.Find(t => t.Time.TimeType == TimeType.Sunset);
+            ret["dusk"] = times.Find(t => t.Time.TimeType == TimeType.Dusk);
+            return new ObjectResult(ret);
         }
 
 #region Helpers

@@ -1,7 +1,7 @@
 import {Component, Input, Output, EventEmitter} from '@angular/core';
 import {Form} from '@angular/forms';
 
-import {Switch, SwitchState, Flip} from '../models';
+import {Switch, SwitchState, Flip, TimeType} from '../models';
 
 @Component({
     selector: 'switch',
@@ -12,6 +12,16 @@ export class SwitchEditor {
     @Input() sw: Switch;
     @Output()
     switchDeleted = new EventEmitter<any>();
+
+    get flips(): Array<Flip> {
+        return this.sw.flips.sort((lhs, rhs) => {
+            let ret = 0;
+            ret += (lhs.time.timeOfDay - rhs.time.timeOfDay) * 100;
+            ret += (lhs.time.hour - rhs.time.hour) * 10;
+            ret += lhs.time.minute - rhs.time.minute
+            return ret;
+        })
+    }
 
     addFlip(): void {
         console.log("SwitchEditor.addFlip")

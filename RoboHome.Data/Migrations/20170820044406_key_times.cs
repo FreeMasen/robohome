@@ -102,9 +102,10 @@ namespace projects.Migrations
             migrationBuilder.DropForeignKey(
                 name: "FK_Flip_Switches_SwitchId",
                 table: "Flip");
-
-            migrationBuilder.DropTable(
-                name: "KeyTimes");
+            try {
+                migrationBuilder.DropTable(
+                    name: "KeyTimes");
+            } catch (System.Exception ex) {}
 
             migrationBuilder.DropPrimaryKey(
                 name: "PK_Flip",

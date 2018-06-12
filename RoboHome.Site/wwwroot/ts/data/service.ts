@@ -4,6 +4,7 @@ import {Http} from '@angular/http';
 import 'rxjs';
 
 import {Remote, Switch, Flip, SwitchState, Time} from '../models';
+import KeyTimes from '../models/keyTimes';
 
 @Injectable()
 export class Data {
@@ -98,5 +99,46 @@ export class Data {
 
     private workerCallback(worker, event) {
         console.log('workerCallback', worker ,event);
+    }
+
+    async getDawn(): Promise<Time> {
+        return await this.getKeyTimes().then(k => k.dawn);
+    }
+
+    async getSunset(): Promise<Time> {
+        return await this.getKeyTimes().then(k => k.sunset);
+    }
+
+    async getDusk(): Promise<Time> {
+        return await this.getKeyTimes().then(k => k.dusk);
+    }
+
+    private async getKeyTimes(): Promise<KeyTimes> {
+        let text = localStorage.getItem('key-times');
+        let ret: KeyTimes;
+        if (!text) {
+            ret = await this.fetchKeyTimes();
+            this.storeKeyTimes(ret);
+            return ret;
+        }
+        let partial = JSON.parse(text);
+        ret = KeyTimes.fromJSON(partial);
+        if (ret.isOutOfDate()) {
+            ret = await this.fetchKeyTimes();
+            this.storeKeyTimes(ret);
+        }
+        return ret;
+    }
+
+    private async fetchKeyTimes(): Promise<KeyTimes> {
+        return this.http.get('/api/keyTimes')
+        .toPromise()
+        .then(res => res.json())
+        .then(json => KeyTimes.fromJSON(json));
+    }
+
+    private storeKeyTimes(times: KeyTimes) {
+        let text = JSON.stringify(times);
+        localStorage.setItem('key-times', text);
     }
 }
