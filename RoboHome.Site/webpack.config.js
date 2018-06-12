@@ -4,7 +4,7 @@ const path = require('path');
 
 module.exports = function(env) {
     let outDir = path.join(__dirname, 'wwwroot', 'js');
-    let devtool = null;
+    let devtool = false;
     let envDesc;
     let minify = false;
     switch (env) {
