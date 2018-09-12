@@ -36,27 +36,35 @@ namespace RoboHome.Services
             this.Connection = factory.CreateConnection();
         }
 
-        public void SendMessage(int remoteId, object message) 
+        public void SendMessage(int remoteId, object message)
         {
             var json = JsonConvert.SerializeObject(message);
-            var msg = Encoding.UTF8.GetBytes(json);
-
             var topic = remoteId.ToString();
             var exchangeName = "switches";
-            using (var channel = this.Connection.CreateModel())
-            {
-                channel.ExchangeDeclare(exchangeName, "topic", false);
-                
-                var props = channel.CreateBasicProperties();
-                channel.QueueDeclare(exchangeName, false, false, false, null);
-                channel.QueueBind(exchangeName, exchangeName, topic, null);
-                channel.BasicPublish(exchangeName, topic, true, props, msg);
-            }
+            this.SendText(json, exchangeName, exchangeName, topic);
         }
 
         public void SendMessage(int remoteId, Message message)
         {
             this.SendMessage(remoteId, message.ToSend());
+        }
+
+        public void SendDbUpdateMessage() {
+            Console.WriteLine("Messenger.SendDbUpdateMessage");
+            this.SendText("update", "refresh", "switches", "update");
+        }
+
+        public void SendText(string msgStr, string queue, string exchange, string topic)
+        {
+            var msg = Encoding.UTF8.GetBytes(msgStr);
+            using (var ch = this.Connection.CreateModel())
+            {
+                ch.ExchangeDeclare(exchange, "topic", false);
+                var props = ch.CreateBasicProperties();
+                ch.QueueDeclare(queue, false, false, false, null);
+                ch.QueueBind(queue, exchange, topic, null);
+                ch.BasicPublish(exchange, topic, true, props, msg);
+            }
         }
     }
     public struct Message

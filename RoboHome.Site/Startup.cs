@@ -43,14 +43,12 @@ namespace RoboHome
                     .AddMqClient(options => {
                         options.UseConfig(MqConnection);
                     })
-                    .AddFlipScheduler(dbConnectionString, weatherUri)
-                    .AddFlipExecuter(dbConnectionString, MqConnection)
                     .AddMvc();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            app.Use( async (context, next) => {
+            app.Use(async (context, next) => {
                 Console.WriteLine($"{DateTime.Now}::{context.Request.Method}: {context.Request.Path}");
                 await next();
             });

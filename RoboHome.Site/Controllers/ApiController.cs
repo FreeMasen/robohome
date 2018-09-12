@@ -63,6 +63,7 @@ namespace RoboHome.Controllers
                                         });
                     await this._context.SaveChangesAsync();
                     Console.WriteLine("Remote added");
+                    this._messenger.SendDbUpdateMessage();
                     return new ObjectResult(newEntity.Entity);
                 }
                 else
@@ -142,6 +143,7 @@ namespace RoboHome.Controllers
                                             .Include(r => r.Switches)
                                             .Include("Switches.Flips")
                                             .FirstOrDefaultAsync();
+                    this._messenger.SendDbUpdateMessage();
                     return new ObjectResult(toSend);
                 }
             }
@@ -168,6 +170,7 @@ namespace RoboHome.Controllers
                 }
                 this._context.Remotes.Remove(remote);
                 await this._context.SaveChangesAsync();
+                this._messenger.SendDbUpdateMessage();
                 return new ObjectResult(null);
             } catch (Exception ex) {
                 Console.WriteLine("Error deleting remote {0}", ex.Message);
