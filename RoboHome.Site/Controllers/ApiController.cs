@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using RoboHome.Data;
 using RoboHome.Models;
 using RoboHome.Services;
@@ -14,23 +15,31 @@ namespace RoboHome.Controllers
     {
         private readonly RoboContext _context;
         private readonly Messenger _messenger;
+        private readonly ILogger _logger;
 
-        public ApiController(RoboContext context, IMqClient mqClient) {
+        public ApiController(RoboContext context, IMqClient mqClient, ILogger<ApiController> logger) {
             this._context = context;
             this._messenger = (Messenger)mqClient;
+            this._logger = logger;
         }
 
         [HttpGet("/api/remotes")]
         public async Task<IActionResult> Remotes() {
-            try {
-                var remotes = await this._context.Remotes
-                                                .Include(r => r.Switches)
-                                                .Include("Switches.Flips")
-                                                .Include("Switches.Flips.Time")
-                                                .ToListAsync();
-                return new ObjectResult(remotes);
-            } catch(Exception ex) {
-                return new BadRequestObjectResult(ex.Message);
+            using (_logger.BeginScope("Message {HoleValue}", DateTime.Now))
+            {
+                _logger.LogInformation(1000, "Getting all remotes");
+                try {
+                    var remotes = await this._context.Remotes
+                                                    .Include(r => r.Switches)
+                                                    .Include("Switches.Flips")
+                                                    .Include("Switches.Flips.Time")
+                                                    .ToListAsync();
+                    _logger.LogInformation(1001, $"Successfully got all remotes {remotes.Count()}");
+                    return new ObjectResult(remotes);
+                } catch(Exception ex) {
+                    _logger.LogError(1002, ex, "Error getting remotes");
+                    return new BadRequestObjectResult(ex.Message);
+                }
             }
         }
 

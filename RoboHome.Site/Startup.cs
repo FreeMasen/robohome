@@ -36,6 +36,7 @@ namespace RoboHome
 
         public void ConfigureServices(IServiceCollection services)
         {
+            
             var dbConnectionString = Configuration.GetConnectionString("DefaultConnectionString");
             var MqConnection = Configuration.GetSection("MqUrl");
             var weatherUri = Configuration.GetConnectionString("WeatherServiceUri");
